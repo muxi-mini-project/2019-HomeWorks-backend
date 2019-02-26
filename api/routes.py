@@ -31,14 +31,9 @@ def login():
     if check is True:
         data = {
                 'loginname':loginname,
-                'password':password,
+                'message': 'login succeed'
                 }
         return jsonify(data), 200
     else:
         return jsonify({'message': 'login fall'}), 401
 
-@app.route('/index')
-@app.route('/')
-#@login_required
-def index():
-    pass
