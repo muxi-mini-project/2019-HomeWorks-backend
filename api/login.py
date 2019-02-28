@@ -23,10 +23,17 @@ def login():
                 'msg': 'login fall',
                 }), 400
     else:
+        url =  "http://spoc.ccnu.edu.cn/userInfo/getUserInfo"
+        info = session.post(url).json()
+        urerInfo = info['data']['userInfoVO']['userinfo']
         js = {
                 'code': 1,
                 'msg': 'login succeed',
-                'loginName': loginName
+                'userInfo': {
+                    'username': loginName,
+                    'realname': userInfo.get('realname'),
+                    'userid': userInfo.get('id'),
+                    }
                 }
         return jsonify(js), 200
 
