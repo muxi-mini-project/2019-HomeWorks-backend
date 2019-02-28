@@ -17,7 +17,7 @@ def logincheck(loginname, password, verifcode):
     else:
         return False
     
-@app.route('/login', method = ['POST', 'GET'])
+@app.route('/login', methods = ['POST', 'GET'])
 #def login(loginname, password, verifcode):
 def login():
     jv = request.get_json()
@@ -37,3 +37,7 @@ def login():
     else:
         return jsonify({'message': 'login fall'}), 401
 
+@app.route('/index')
+@app.route('/')
+def index():
+    return 'ok'

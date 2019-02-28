@@ -3,7 +3,7 @@ from flask import jsonify, request
 from . import app
 
 
-@app.route('/api/login', method = ['POST'])
+@app.route('/api/login', methods = ['POST'])
 def login():
     if request.method == 'POST':
         param = request.get_json()
@@ -17,7 +17,7 @@ def login():
 
         url = "http://spoc.ccnu.edu.cn/userLoginController/getUserProfile"
         rp = session.post(url, data=payload)
-        status_code = rp.json().get('msg')
+        status_code = rp.json().get('code')
         if status_code:
             return jsonify({
                     'code': 0,
@@ -26,7 +26,7 @@ def login():
         else:
             url =  "http://spoc.ccnu.edu.cn/userInfo/getUserInfo"
             info = session.post(url).json()
-            urerInfo = info['data']['userInfoVO']['userinfo']
+            userInfo = info['data']['userInfoVO']['userInfo']
             js = {
                     'code': 1,
                     'msg': 'login succeed',
@@ -39,5 +39,4 @@ def login():
             return jsonify(js), 200
     else:
         return jsonify({}), 500
-
 
