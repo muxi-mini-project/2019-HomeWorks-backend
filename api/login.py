@@ -21,7 +21,7 @@ def login():
         return jsonify({
                 'code': 0,
                 'msg': 'login fall',
-                }), 400
+                }), 401
     else:
         url =  "http://spoc.ccnu.edu.cn/userInfo/getUserInfo"
         info = session.post(url).json()
