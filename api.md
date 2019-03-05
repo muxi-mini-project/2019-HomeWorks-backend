@@ -19,7 +19,7 @@
     'code': int,        //成功:1，失败:0
     'msg': String,      //登录结果信息
     'cookie':String,
-    'userInfo': {                       //用户信息，失败则无此关键字
+    'userInfo': {                       //用户信息
                 'userName': String,     //用户学号
                 'realName': String,     //用户姓名
                 'userId': String,
@@ -92,8 +92,8 @@
     "total": Int,
     "data": [
         {
-            "status": Int,      //未完成：0，已完成：1
-            "title": String,
+            "status": Int,      //未提交：0，待批阅：1，已驳回：2，已批阅：3
+            "assignName": String,
             "beginTime": String,
             "endTime": String,
             "assignId": String,     //任务ID
@@ -106,7 +106,6 @@
 ### Status Code
 ```
 200 成功
-404 siteId错误
 ```
 
 ## 任务详情
@@ -138,7 +137,7 @@
     "endTime": String,
     "content": String,          //作业要求，颁布的作业
     "pointNum": Int,            //已批阅数
-    "isgroup": Int,             //分组作业：1，个人作业：0
+    "isGroup": Int,             //分组作业：1，个人作业：0
     "groupNum": Int,            //小组数
     "studentNum": Int,          //学生数
     "groupPoint": Int,          //小组得分
@@ -182,15 +181,16 @@
 {
     "code": Int,
     "msg": String,
-    "userId": String,
     'cookie': String,
+    "userId": String,
     "total": Int,
     'assignList': [
         {
             "siteId": String,
             "status": Int,
             "className": String,
-            "title": String,
+            "assignName": String,
+            "teacher": String,
             "beginTime": String,
             "endTime": String,
             "assignId": String,
@@ -221,10 +221,11 @@
 {
     "code": Int,
     "msg": String,
-    "userId": String,
     "cookie": String,
+    "userId": String,
     'realName': String,     //姓名
     'userName': String,     //学号
+    "apartment": String,    //院系
     "mail": String,
 }
 ```
@@ -233,15 +234,15 @@
 200 成功
 ```
 
-## 未完成作业通知
+## 未提交任务提醒
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/unSubmit|POST  |  cookie(string)  |
+|/api/notice |POST  |  cookie(string)  |
 
 ### Post Data
 ```
 {
-    "userId"
+    "userId": String,
 }
 ```
 ### Return Data
@@ -249,16 +250,68 @@
 {
     "code": Int,
     "msg": String,
+    "cookie": String,
+    "userId": String,
+    "realName": String,
+    "userName": String,
+    "total": Int,           //未提交总数
     "data": [
         {
-            "unCommitNum": Int,
             "className": String,
-            "endTime": 
-        }, {
-            ...
-        }
+            "assignName": String,
+            "teacher": String,
+            "siteId": String,
+            "assignId": String,
+            "beginTime": String,
+            "endTime": String,
+        }, ...
     ]
 }
+```
+### Status Code
+```
+200 成功
+```
+
+## 搜索
+|URL        |Method|header|
+|:--:       |:--:  |:--:  |
+|/api/search |POST  |  cookie(string)  |
+### URL Params
+```
+keyword: String
+```
+### Post Data
+```
+{
+    "userId": String
+}
+```
+### Return Data
+```
+{
+    "code": Int,
+    "msg": String,
+    "cookie": String,
+    "userId": String,
+    "total": Int,
+    "data": [
+        {
+            "assignId": String,
+            "siteId": String,
+            "assignName": String,
+            "className": String,
+            "status": Int,
+            "beginTime": String,
+            "endTime": String,
+            "teacher": String,
+        }, ...
+    ]
+}
+```
+### Status Code
+```
+200 成功
 ```
 
 ## <center> 名词规范表 </center>
