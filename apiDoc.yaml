@@ -1,0 +1,55 @@
+swagger: '2.0'
+
+info:
+    title: server API
+    version: 1.0.0
+    description: the server API of the Homeworks
+
+host: 47.102.120.167
+port: 2333
+basePath: /api
+schemes:
+    - http
+    - https
+
+tags:
+    - name:
+        description:
+    - name:
+        description:
+    - name:
+        description:
+    - name:
+        description:
+
+paths:
+    /login:
+        post:
+            tags:
+            summary: login
+            description:
+            parameters:
+                - name:
+                    in: formData
+                    schema:
+                        required:
+                            - userName
+                            - password
+                        properties:
+                            userName:
+                                type: string
+                            password:
+                                type: string
+            responses:
+                200:
+                    description:
+                    schema:
+                        required:
+                            - cookie
+                            - code
+                            - msg
+                            - userInfo
+                        properties:
+                            cookie: string
+                            code: integer
+
