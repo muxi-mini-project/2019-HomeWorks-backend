@@ -1,57 +1,387 @@
 swagger: '2.0'
-
 info:
-    title: server API
-    version: 1.0.0
-    description: the server API of the Homeworks
-
+  description: the server API of the Homeworks
+  version: 1.0.0
+  title: server API
+  #termsOfService: 'http://swagger.io/terms/'
+  #contact:
+   # email: apiteam@swagger.io
+  #license:
+   # name: Apache 2.0
+    #url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 host: 47.102.120.167:2333
 basePath: /api
-schemes:
-    - http
-    - https
-
 tags:
-    - name:
-        description:
-    - name:
-        description:
-    - name:
-        description:
-    - name:
-        description:
-
+  - name: assignment
+    description: assignment
+    #externalDocs:
+     # description: Find out more
+      #url: 'http://swagger.io'
+  - name: class
+    description: class
+  - name: user
+    description: Operations about user
+    #externalDocs:
+     # description: Find out more about our store
+      #url: 'http://swagger.io'
+schemes:
+  - https
+  - http
 paths:
-    /login:
-        post:
-            tags:
-            summary: login
-            description:
-            parameters:
-                - name:
-                    in: formData
-                    schema:
-                        required:
-                            - userName
-                            - password
-                        properties:
-                            userName:
-                                type: string
-                            password:
-                                type: string
-            responses:
-                200:
-                    description: successfully login
-                    schema:
-                        type: array
-                        required:
-                            - cookie
-                            - code
-                            - msg
-                            - userInfo
-                        properties:
-                            cookie: string
-                            code: integer
-
-                            
-
+  /login:
+    post:
+      tags:
+        - user
+      summary: login
+      description: login for account
+      #operationId: addPet
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: data
+          in: body
+          description: u
+          schema:
+            required:
+              - userName
+              - password
+            properties:
+              userName:
+                type: string
+              password:
+                type: string
+      responses:
+        200:
+          description: success
+          schema:
+            type: object
+            required:
+              - cookie
+              - userInfo
+            properties:
+              cookie: 
+                type: string
+              code:
+                type: integer
+              msg:
+                type: string
+              userInfo:
+                type: object
+                required:
+                  - userId
+                  - userName
+                properties:
+                  userId:
+                    type: string
+                  userName:
+                    type: string
+                  realName:
+                    type: string
+        401:
+          description: 用户名或密码错误
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              msg:
+                type: string
+   #   security:
+    #    - petstore_auth:
+     #       - 'write:pets'
+      #      - 'read:pets'
+      
+  /api/class/list:
+    post:
+      tags:
+        - class
+      summary: Get class list
+      description: class informations
+  #    operationId: findPetsByStatus
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: cookie
+          in: header
+          description: cookie
+          required: true
+          type: string
+        - name: data
+          in: body
+          schema:
+            required:
+              - userId
+            properties:
+              userId:
+                type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+              msg:
+                type: string
+              cookie:
+                type: string
+              userId:
+                type: string
+              total:
+                type: integer
+              classList:
+                type: array
+                items:
+                  properties:
+                    className:
+                      type: string
+                    teacher:
+                      type: string
+                    siteId:
+                      type: string
+   #   security:
+    #    - petstore_auth:
+     #       - 'write:pets'
+      #      - 'read:pets'
+      
+  /api/class/assignment:
+    post:
+      tags:
+        - assignment
+      summary: assignments in each class
+      description: assignments in each class
+    #  operationId: findPetsByTags
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: cookie
+          in: header
+          description: cookie
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: post data
+          schema:
+            required:
+              - userId
+              - siteId
+            properties:
+              userId:
+                type: string
+              siteId:
+                type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              cookie:
+                type: string
+              code:
+                type: integer
+              msg:
+                type: string
+              userId:
+                type: string
+              siteId:
+                type: string
+              total:
+                type: integer
+              data:
+                type: array
+                items:
+                  properties:
+                    status:
+                      type: integer
+                    assignName:
+                      type: string
+                    beginTime:
+                      type: string
+                    endTime:
+                      type: string
+                    assignId:
+                      type: string
+      #security:
+       # - petstore_auth:
+        #    - 'write:pets'
+         #   - 'read:pets'
+      deprecated: false #是否不推荐使用/不可用
+      
+  /api/assignment/info:
+    post:
+      tags:
+        - assignment
+      summary: assignments' information
+      description: specific information of assignments
+    #  operationId: updatePetWithForm
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: cookie
+          in: header
+          description: cookie
+          required: true
+          type: string
+          #format: int64
+        - name: data
+          in: body
+          description: post data
+          schema:
+            required:
+              - userId
+              - assignId
+              - siteId
+            properties:
+              userId:
+                type: string
+              assignId:
+                type: string
+              siteId:
+                type: string
+      responses:
+        200:
+          description: success
+          schema:
+            type: object
+            properties:
+              cookie:
+                type: string
+              code:
+                type: integer
+              msg:
+                type: string
+              userId:
+                type: string
+              siteId:
+                type: string
+              assignId:
+                type: string
+              className:
+                type: string
+              assignName:
+                type: string
+              status:
+                type: integer
+              beginTime:
+                type: string
+              endTime:
+                type: string
+              content:
+                type: string
+              pointNum:
+                type: integer
+              isGroup:
+                type: integer
+              groupNum:
+                type: integer
+              studentNum:
+                type: integer
+              groupPoint:
+                type: integer
+              personalPoint:
+                type: integer
+              feedback:
+                type: string
+              assignAttachmentNum:
+                type: integer
+              assignAttachment:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    ext:
+                      type: string
+              submitAttachmentNum:
+                type: integer
+              submitAttachment:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    ext:
+                      type: string
+                    uploadTime:
+                      type: string
+              submitContent:
+                type: string
+                description: 作业内容，提交的作业
+      #security:
+       # - petstore_auth:
+        #    - 'write:pets'
+         #   - 'read:pets'
+  /api/assignment/list:
+    post:
+      tags:
+        - assignment
+      summary: assignment list
+      description: get the assignment list
+      #operationId: uploadFile
+      produces:
+        - application/json
+      parameters:
+        - name: cookie
+          in: header
+          description: cookie
+          required: true
+          type: string
+        - name: data
+          in: body
+          schema:
+            required:
+              - userId
+            properties:
+              userId:
+                type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              cookie:
+                type: string
+              code:
+                type: integer
+              msg:
+                type: string
+              userId:
+                type: string
+              total:
+                type: integer
+              assignList:
+                type: array
+                items:
+                  properties:
+                    siteId:
+                      type: string
+                    status:
+                      type: integer
+                    className:
+                      type: string
+                    assignName:
+                      type: string
+                    teacher:
+                      type: string
+                    beginTime:
+                      type: string
+                    endTime:
+                      type: string
+                    assignId:
+                      type: string
