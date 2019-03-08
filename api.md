@@ -163,7 +163,10 @@
     "submitContent": String,    //作业内容，提交的作业
 }
 ```
-
+### Status Code
+```
+200 成功
+```
 
 ## 获取任务列表
 |URL        |Method|header|

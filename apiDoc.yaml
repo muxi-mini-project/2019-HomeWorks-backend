@@ -5,8 +5,7 @@ info:
     version: 1.0.0
     description: the server API of the Homeworks
 
-host: 47.102.120.167
-port: 2333
+host: 47.102.120.167:2333
 basePath: /api
 schemes:
     - http
@@ -42,8 +41,9 @@ paths:
                                 type: string
             responses:
                 200:
-                    description:
+                    description: successfully login
                     schema:
+                        type: array
                         required:
                             - cookie
                             - code
@@ -52,4 +52,6 @@ paths:
                         properties:
                             cookie: string
                             code: integer
+
+                            
 
