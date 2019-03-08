@@ -1,32 +1,24 @@
 swagger: '2.0'
+
 info:
   description: the server API of the Homeworks
   version: 1.0.0
   title: server API
-  #termsOfService: 'http://swagger.io/terms/'
-  #contact:
-   # email: apiteam@swagger.io
-  #license:
-   # name: Apache 2.0
-    #url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    
 host: 47.102.120.167:2333
 basePath: /api
 tags:
   - name: assignment
     description: assignment
-    #externalDocs:
-     # description: Find out more
-      #url: 'http://swagger.io'
   - name: class
     description: class
   - name: user
-    description: Operations about user
-    #externalDocs:
-     # description: Find out more about our store
-      #url: 'http://swagger.io'
+    description: user
+    
 schemes:
   - https
   - http
+  
 paths:
   /login:
     post:
@@ -34,7 +26,6 @@ paths:
         - user
       summary: login
       description: login for account
-      #operationId: addPet
       consumes:
         - application/json
       produces:
@@ -42,7 +33,7 @@ paths:
       parameters:
         - name: data
           in: body
-          description: u
+          description: post data
           schema:
             required:
               - userName
@@ -50,11 +41,13 @@ paths:
             properties:
               userName:
                 type: string
+                description: 账号（学号）
               password:
                 type: string
+                description: 云课堂密码
       responses:
         200:
-          description: success
+          description: successfully login
           schema:
             type: object
             required:
@@ -65,20 +58,26 @@ paths:
                 type: string
               code:
                 type: integer
+                description: 成功：1，失败：0
               msg:
                 type: string
+                description: 登录结果信息
               userInfo:
                 type: object
+                description: 用户信息
                 required:
                   - userId
                   - userName
+                  - realName
                 properties:
                   userId:
                     type: string
                   userName:
                     type: string
+                    description: 用户学号
                   realName:
                     type: string
+                    description: 用户姓名
         401:
           description: 用户名或密码错误
           schema:
@@ -93,13 +92,12 @@ paths:
      #       - 'write:pets'
       #      - 'read:pets'
       
-  /api/class/list:
+  /class/list:
     post:
       tags:
         - class
-      summary: Get class list
-      description: class informations
-  #    operationId: findPetsByStatus
+      summary: 课堂列表
+      description: Get class list
       consumes:
         - application/json
       produces:
@@ -134,6 +132,7 @@ paths:
                 type: string
               total:
                 type: integer
+                description: 课堂总数
               classList:
                 type: array
                 items:
@@ -144,18 +143,18 @@ paths:
                       type: string
                     siteId:
                       type: string
+                      description: 课堂站点ID
    #   security:
     #    - petstore_auth:
      #       - 'write:pets'
       #      - 'read:pets'
       
-  /api/class/assignment:
+  /class/assignment:
     post:
       tags:
-        - assignment
-      summary: assignments in each class
-      description: assignments in each class
-    #  operationId: findPetsByTags
+        - class
+      summary: 获取某一课堂任务列表
+      description: get assignments of a class
       consumes:
         - application/json
       produces:
@@ -202,27 +201,28 @@ paths:
                   properties:
                     status:
                       type: integer
+                      description: 未提交：0，待批阅：1，已驳回：2，已批阅：3
                     assignName:
                       type: string
+                      description: 任务/作业名称
                     beginTime:
                       type: string
+                      description: 开始时间
                     endTime:
                       type: string
+                      description: 结束时间
                     assignId:
                       type: string
-      #security:
-       # - petstore_auth:
-        #    - 'write:pets'
-         #   - 'read:pets'
-      deprecated: false #是否不推荐使用/不可用
+                      description: 任务ID
+      deprecated: false
+      #该路由是否不推荐使用/不可用
       
-  /api/assignment/info:
+  /assignment/info:
     post:
       tags:
         - assignment
-      summary: assignments' information
+      summary: 任务详情
       description: specific information of assignments
-    #  operationId: updatePetWithForm
       consumes:
         - application/json
       produces:
@@ -233,7 +233,6 @@ paths:
           description: cookie
           required: true
           type: string
-          #format: int64
         - name: data
           in: body
           description: post data
@@ -269,33 +268,46 @@ paths:
                 type: string
               className:
                 type: string
+                description: 课堂名
               assignName:
                 type: string
+                description: 任务名
               status:
                 type: integer
+                description: 未提交：0，待批阅：1，已驳回：2，已批阅：3
               beginTime:
                 type: string
               endTime:
                 type: string
               content:
                 type: string
+                description: 作业要求，颁布的作业
               pointNum:
                 type: integer
+                description: 已批阅数
               isGroup:
                 type: integer
+                description: 分组作业：1，个人作业：0
               groupNum:
                 type: integer
+                description: 小组数
               studentNum:
                 type: integer
+                description: 学生数
               groupPoint:
                 type: integer
+                description: 小组得分
               personalPoint:
                 type: integer
+                description: 个人得分
               feedback:
                 type: string
+                description: 反馈
               assignAttachmentNum:
                 type: integer
+                description: 作业提供的附件的数目
               assignAttachment:
+                description: 作业提供的附件的信息
                 type: array
                 items:
                   properties:
@@ -303,11 +315,15 @@ paths:
                       type: string
                     name:
                       type: string
+                      description: 附件名称
                     ext:
                       type: string
+                      description: 附件格式
               submitAttachmentNum:
                 type: integer
+                description: 以作业形式提交的附件的数目
               submitAttachment:
+                description: 以作业形式提交的附件的信息
                 type: array
                 items:
                   properties:
@@ -315,10 +331,13 @@ paths:
                       type: string
                     name:
                       type: string
+                      description: 附件名
                     ext:
                       type: string
+                      description: 附件格式
                     uploadTime:
                       type: string
+                      description: 附件上传时间
               submitContent:
                 type: string
                 description: 作业内容，提交的作业
@@ -326,7 +345,8 @@ paths:
        # - petstore_auth:
         #    - 'write:pets'
          #   - 'read:pets'
-  /api/assignment/list:
+  
+  /assignment/list:
     post:
       tags:
         - assignment
@@ -385,3 +405,169 @@ paths:
                       type: string
                     assignId:
                       type: string
+
+  /userInfo:
+    post:
+      tags:
+        - user
+      summary: user information
+      description: user information
+      #operationId: placeOrder
+      produces:
+        - application/json
+      parameters:
+        - name: cookie
+          in: header
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: post data
+          schema:
+            required:
+              - userId
+            properties:
+              uerId:
+                type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              cookie:
+                type: string
+              code:
+                type: integer
+              msg:
+                type: string
+              userId:
+                type: string
+              realName:
+                type: string
+              userName:
+                type: string
+              apartment:
+                type: string
+              mail:
+                type: string
+                
+  /notice:
+    post:
+      tags:
+        - assignment
+      summary: notice
+      description: notice the unsubmit assignments
+      parameters:
+        - name: cookie
+          in: header
+          required: true
+          type: string
+        - name: data
+          in: body
+          schema:
+            required:
+              - userId
+            properties:
+              userId:
+                type: string
+      responses:
+        200:
+          description: success
+          schema:
+            properties:
+              cookie:
+                type: string
+              code:
+                type: integer
+              msg:
+                type: string
+              userId:
+                type: string
+              userName:
+                type: string
+              realName:
+                type: string
+              total:
+                type: integer
+                description: 未提交总数
+              data:
+                type: array
+                items:
+                  properties:
+                    className:
+                      type: string
+                    assignName:
+                      type: string
+                    teacher:
+                      type: string
+                    siteId:
+                      type: string
+                    assignId:
+                      type: string
+                    beginTime:
+                      type: string
+                    endTime:
+                      type: string
+                      
+  /search:
+    post:
+      tags:
+        - assignment
+      summary: 搜索
+      description: search an assignment
+      parameters:
+        - name: cookie
+          in: header
+          required: true
+          type: string
+        - name: keyword
+          in: query
+          description: 搜索关键词
+          type: string
+        - name: data
+          in: body
+          description: post data
+          schema:
+            required:
+              - userId
+            properties:
+              userId:
+                type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              cookie:
+                type: string
+              code:
+                type: integer
+              msg:
+                type: string
+              userId:
+                type: string
+              total:
+                type: integer
+              data:
+                type: array
+                items:
+                  properties:
+                    assignId:
+                      type: string
+                    siteId:
+                      type: string
+                    assignName:
+                      type: string
+                    className:
+                      type: string
+                    status:
+                      type: integer
+                    beginTime:
+                      type: string
+                    endTime:
+                      type: string
+                    teacher:
+                      type: string
+
