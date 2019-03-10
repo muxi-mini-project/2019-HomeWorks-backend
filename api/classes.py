@@ -25,13 +25,13 @@ def classList():
 
     r = session.post(url, json = payload, headers=header)
     data_list = r.json().get('data').get('list')
-    total = r.json().get('data').get('tital')
+    total = r.json().get('data').get('total')
     classList = []
     for i in range(total):
         course = {}
-        course['className'] = data_list[i]['courseName']
-        course['teacher'] = data_list[i]['teacher']
-        course['siteId'] = data_list[i]['siteId']
+        course['className'] = data_list[i].get('courseName')
+        course['teacher'] = data_list[i].get('teacherName')
+        course['siteId'] = data_list[i].get('siteId')
         classList.append(course)
 
     cookie = session.cookies.get_dict()['cookies']
