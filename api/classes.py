@@ -3,7 +3,7 @@ from flask import jsonify, request
 from . import app
 
 @app.route('/api/class/list', methods = ['POST'])
-def classList:
+def classList():
     param = request.get_json()
     userId = param.get('userId')
     cookie = request.headers.get('cookie')
