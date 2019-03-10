@@ -8,6 +8,10 @@ def login():
     param = request.get_json()
     loginName = param.get('userName')
     password = param.get('password')
+    if loginName is None or password is None:
+        return jsonify({
+                'msg': 'Invalid userName or password'
+            }), 400
     payload = {
             'loginName':loginName,
             'password':password,
@@ -19,8 +23,7 @@ def login():
     status_code = rp.json().get('code')
     if status_code:
         return jsonify({
-                'code': 0,
-                'msg': 'login fall',
+                'msg': 'login failed',
                 }), 401
     else:
         url =  "http://spoc.ccnu.edu.cn/userInfo/getUserInfo"

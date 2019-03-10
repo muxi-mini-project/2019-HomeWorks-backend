@@ -4,12 +4,15 @@ from . import app
 
 @app.route('/api/class/list', methods = ['POST'])
 def classList():
-    param = request.get_json()
-    userId = param.get('userId')
+    userId = request.get_json().get('userId')
     cookie = request.headers.get('cookie')
     if cookie is None:
         return jsonify({
                 "msg": "Invalid Cookie"
+            }), 400
+    if userId is None:
+        return jsonify({
+                'msg': 'Invalid userId'
             }), 400
     header = {'cookie': cookie}
     payload = {
