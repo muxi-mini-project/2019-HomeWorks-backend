@@ -58,9 +58,7 @@
                 "className": String,
                 "teacher": String,
                 "siteId": String,
-            },{
-                ...
-            }, ...
+            }
     ]
 }
 ```
@@ -97,9 +95,7 @@
             "beginTime": String,
             "endTime": String,
             "assignId": String,     //任务ID
-        },{
-            ...
-        }, ...
+        }
     ]
 }
 ```
@@ -197,9 +193,7 @@
             "beginTime": String,
             "endTime": String,
             "assignId": String,
-        },{
-            ...
-        }, ...
+        }
     ]
 }
 ```
@@ -267,7 +261,7 @@
             "assignId": String,
             "beginTime": String,
             "endTime": String,
-        }, ...
+        }
     ]
 }
 ```
@@ -308,7 +302,7 @@ keyword: String
             "beginTime": String,
             "endTime": String,
             "teacher": String,
-        }, ...
+        }
     ]
 }
 ```
