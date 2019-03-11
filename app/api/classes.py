@@ -48,4 +48,42 @@ def classList():
             }
     return jsonify(data), 200
 
+@app.route('/api/class/assignment/', methods=['POST'])
+def oneClassAssign():
+    json = request.get_json()
+    userId = json.get('userId')
+    siteId = json.get('siteId')
+    if userId is None or siteId is None:
+        return jsonify({'msg': 'Invalid userId or siteId'}), 400
+    cookie = request.header.get('cookie')
+    if cookie is None:
+        return jsonify({'msg': 'Invalid cookie'}), 400
+    session = requests.session()
+    session.cookies.set('cookies', cookie)
+
+    url = 'http://spoc.ccnu.edu.cn/assignment/getStudentAssignmentList'
+    header = {'cookie': cookie}
+    payload = {
+            'userId': userId,
+            'siteId': siteId,
+            'pageNum': 1,
+            'pageSize': 30
+            }
+    r = session.post(url, json=payload, headers=header)
+
+    data = []
+
+
+
+    cookie = session.cookies.get_dict()['cookies']
+    js_data = {
+            'cookie': cookie,
+            'code': 1,
+            'msg': 'successful'
+            'userId': userId,
+            'siteId': siteId,
+            'total': total,
+            'data': data,
+            }
+    return jsonify(js_data), 200
 
