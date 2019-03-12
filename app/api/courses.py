@@ -1,6 +1,7 @@
 import requests
 from flask import jsonify, request
 from . import app
+from ..verify import verify_siteId
 
 @app.route('/api/class/list', methods = ['POST'])
 def classList():
@@ -55,9 +56,12 @@ def oneClassAssign():
     siteId = json.get('siteId')
     if userId is None or siteId is None:
         return jsonify({'msg': 'Invalid userId or siteId'}), 400
-    cookie = request.header.get('cookie')
+    cookie = request.headers.get('cookie')
     if cookie is None:
         return jsonify({'msg': 'Invalid cookie'}), 400
+    if not verify_siteId(siteId, userId):
+        return jsonify({'msg': 'Wrong siteId'}), 404
+
     session = requests.session()
     session.cookies.set('cookies', cookie)
 
@@ -70,16 +74,25 @@ def oneClassAssign():
             'pageSize': 30
             }
     r = session.post(url, json=payload, headers=header)
-
+    rp_data = r.json().get('data')
+    total = rp_data.get('total')
     data = []
-
-
+    for i in range(total):
+        t = rp_data.get('list')[i]
+        course_data = {
+                'status': t.get('status'),
+                'assignName': t.get('title'),
+                'assignId': t.get('id'),
+                'beginTime': t.get('begintime'),
+                'endTime':t.get('endtime'),
+                }
+        data.append(course_data)
 
     cookie = session.cookies.get_dict()['cookies']
     js_data = {
             'cookie': cookie,
             'code': 1,
-            'msg': 'successful'
+            'msg': 'successful',
             'userId': userId,
             'siteId': siteId,
             'total': total,
