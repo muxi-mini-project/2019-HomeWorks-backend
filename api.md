@@ -3,7 +3,7 @@
 ## 登录
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/login |POST  |  None  |
+|/api/login/ |POST  |  None  |
 
 ### POST Data
 ```
@@ -16,46 +16,38 @@
 ### Return Data
 ```
 {
-    'code': int,        //成功:1，失败:0
-    'msg': String,      //登录结果信息
+    'msg': String,          //登录结果信息
     'cookie':String,
-    'userInfo': {                       //用户信息
-                'userName': String,     //用户学号
-                'realName': String,     //用户姓名
-                'userId': String,
-                }
+    'token': String,
+    'userName': String,     //用户学号
+    'realName': String,     //用户姓名
 }
 ```
 
 ### Status Code
 ```
 200 成功
+400 参数不全
 401 用户名或密码错误
 ```
 
-## 获取课堂
+## 获取课堂列表
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/class/list |POST  |  cookie(string)  |
+|/api/course/list/ |GET  |  cookie, token  |
 
 ### Post Data
-```
-{
-    "userId": String
-}
-```
+None
 
 ### Return Data
 ```
 {
-    "code": Int,
     "msg": String,
     'cookie': String,
-    "userId": String,
     'total': Int,
-    'classList': [
+    'courseList': [
             {
-                "className": String,
+                "courseName": String,
                 "teacher": String,
                 "siteId": String,
             }
@@ -72,30 +64,24 @@
 ## 获取某一课堂任务列表
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/class/assignment/ |POST  |  cookie(string)  |
+|/api/course/{siteId: string}/assignment/list/ |GET  |  cookie, token  |
 
 ### Post Data
-```
-{
-    "userId": String,
-    "siteId": String
-}
-```
+None
+
 ### Return Data
 ```
 {
-    "code": Int,
     "msg": String,
     "cookie": String,
-    "userId": String,
     "siteId": String,
     "total": Int,
     "data": [
         {
             "status": Int,      //未提交：0，待批阅：1，已驳回：2，已批阅：3
-            "assignName": String,
+            "assignName": Int,
             "beginTime": Int,
-            "endTime": Int,
+            "endTime": String,
             "assignId": String,     //任务ID
         }
     ]
@@ -112,39 +98,31 @@
 ## 任务详情
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/assignment/info |POST  |  cookie(string)  |
+|/api/assignment/{siteId: string}/{assignId: string}/info/ |GET |  cookie, token  |
 
 ### Post Data
-```
-{
-    "userId": String,
-    "siteId": String,
-    "assignId": String
-}
-```
+None
 ### Return Data
 ```
 {
-    "code": Int,
     "msg": String,
     "cookie": String,
-    "userId": String,
     "siteId": String,
     "assignId": String,
-    "className": String,        //课堂（科目）名
-    "assignName": String,       //任务（作业）名
-    "status": Int,              //未提交：0，待批阅：1，已驳回：2，已批阅：3
+    "courseName": String,                //课堂（科目）名
+    "assignName": String,               //任务（作业）名
+    "status": Int,                      //未提交：0，待批阅：1，已驳回：2，已批阅：3
     "beginTime": Int,
     "endTime": Int,
-    "content": String,          //作业要求，颁布的作业
-    "pointNum": Int,            //已批阅数
-    "isGroup": Int,             //分组作业：1，个人作业：0
-    "groupNum": Int,            //小组数
-    "studentNum": Int,          //学生数
-    "groupPoint": Int,          //小组得分
-    "personalPoint": Int,       //个人得分
-    "feedback": String,         //作业反馈
-    "assignAttachmentNum": Int,       //作业要求的附件数
+    "content": String,                  //作业要求，颁布的作业
+    "pointNum": Int,                    //已批阅数
+    "isGroup": Int,                     //分组作业：1，个人作业：0
+    "groupNum": Int,                    //小组数
+    "studentNum": Int,                  //学生数
+    "groupPoint": Int,                  //小组得分
+    "personalPoint": Int,               //个人得分
+    "feedback": String,                 //作业反馈
+    "assignAttachmentNum": Int,         //作业要求的附件数
     "assignAttachment": [
                 {
                     "id": String,
@@ -161,42 +139,39 @@
                     "uploadTime": String,
               }
     ]
-    "submitContent": String,    //作业内容，提交的作业
+    "submitContent": String,            //作业内容，提交的作业
 }
 ```
 ### Status Code
 ```
 200 成功
+400 参数不全
+401 身份认证错误
+404 未找到
 ```
 
 ## 获取任务列表
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/assignment/list |POST  |  cookie(string)  |
+|/api/assignment/list/ |GET  |  cookie, token  |
 
 ### Post Data
-```
-{
-    'userId': string
-}
-```
+None
 ### Return Data
 ```
 {
-    "code": Int,
     "msg": String,
     'cookie': String,
-    "userId": String,
     "total": Int,
     'assignList': [
         {
             "siteId": String,
             "status": Int,
-            "className": String,
+            "courseName": String,
             "assignName": String,
             "teacher": String,
-            "beginTime": String,
-            "endTime": String,
+            "beginTime": Int,
+            "endTime": Int,
             "assignId": String,
         }
     ]
@@ -205,67 +180,61 @@
 ### Status Code
 ```
 200 成功
+400 参数不全
+401 身份认证错误
 ```
 
 ## 个人信息
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/userInfo|POST  |  cookie(string)  |
+|/api/userInfo/ |GET  |  cookie, token  |
 
 ### Post Data
-```
-{
-    'userId': String
-}
-```
+None
+
 ### Return Data
 ```
 {
-    "code": Int,
     "msg": String,
     "cookie": String,
-    "userId": String,
     'realName': String,     //姓名
     'userName': String,     //学号
     "apartment": String,    //院系
-    "mail": String,
+    "email": String,
 }
 ```
 ### Status Code
 ```
 200 成功
+400 参数不全
+401 身份认证错误
 ```
 
 ## 未提交任务提醒
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/notice |POST  |  cookie(string)  |
+|/api/notice/ | GET  |  cookie, token  |
 
 ### Post Data
-```
-{
-    "userId": String,
-}
-```
+None
+
 ### Return Data
 ```
 {
-    "code": Int,
     "msg": String,
     "cookie": String,
-    "userId": String,
     "realName": String,
     "userName": String,
     "total": Int,           //未提交总数
     "data": [
         {
-            "className": String,
+            "courseName": String,
             "assignName": String,
             "teacher": String,
             "siteId": String,
             "assignId": String,
-            "beginTime": String,
-            "endTime": String,
+            "beginTime": Int,
+            "endTime": Int,
         }
     ]
 }
@@ -273,39 +242,35 @@
 ### Status Code
 ```
 200 成功
+400 参数不全
+401 身份认证错误
 ```
 
 ## 搜索
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/search |POST  |  cookie(string)  |
+|/api/search/ |GET  |  cookie, token  |
 ### URL Params
 ```
 keyword: String
 ```
 ### Post Data
-```
-{
-    "userId": String
-}
-```
+None
 ### Return Data
 ```
 {
-    "code": Int,
     "msg": String,
     "cookie": String,
-    "userId": String,
     "total": Int,
     "data": [
         {
             "assignId": String,
             "siteId": String,
             "assignName": String,
-            "className": String,
+            "courseName": String,
             "status": Int,
-            "beginTime": String,
-            "endTime": String,
+            "beginTime": Int,
+            "endTime": Int,
             "teacher": String,
         }
     ]
@@ -314,7 +279,59 @@ keyword: String
 ### Status Code
 ```
 200 成功
+400 请求参数不全
+401 身份认证错误
+404 未找到
 ```
+
+## 添加邮箱
+|URL        |Method|header|
+|:--:       |:--:  |:--:  |
+|/api/email/add/ |POST  |  cookie, token  |
+### Post Data
+```
+{
+    'email': String
+}
+```
+### Return Data
+```
+{
+    'msg': String
+    'cookie': String
+}
+```
+### Status Code
+```
+200 成功
+400 参数不全或格式错误
+401 身份认证错误
+```
+
+## 修改邮箱
+|URL        |Method|header|
+|:--:       |:--:  |:--:  |
+|/api/email/modify/ |PUT  |  cookie, token  |
+### Post Data
+```
+{
+    'email': String
+}
+```
+### Return Data
+```
+{
+    'msg': String
+    'cookie': String
+}
+```
+### Status Code
+```
+200 成功
+400 参数不全或格式错误
+401 身份认证错误
+```
+
 
 ## <center> 名词规范表 </center>
 |关键字|表意|
@@ -323,8 +340,8 @@ keyword: String
 | password | 密码  |
 | realName  | 姓名  |
 | userId  | 用户Id  |
-| classNme | 课堂名  |
+| course  | 课堂    |
+| courseNme | 课堂名  |
 | siteId  | 课堂站点ID  |
 | assignName | 任务名   |
 | assignId  | 任务ID    |
-
