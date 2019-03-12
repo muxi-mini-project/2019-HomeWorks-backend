@@ -1,20 +1,22 @@
 import requests
 from flask import jsonify, request
 from . import app
+from .. import db
+from ..models import User
 
 
-@app.route('/api/login', methods = ['POST'])
+@app.route('/login/', methods = ['POST'])
 def login():
     param = request.get_json()
-    loginName = param.get('userName')
+    userName = param.get('userName')
     password = param.get('password')
-    if loginName is None or password is None:
+    if userName is None or password is None:
         return jsonify({
                 'msg': 'Invalid userName or password'
             }), 400
     payload = {
-            'loginName':loginName,
-            'password':password,
+            'loginName': userName,
+            'password': password,
             }
     session = requests.session()
 
@@ -27,18 +29,24 @@ def login():
                 }), 401
     else:
         url =  "http://spoc.ccnu.edu.cn/userInfo/getUserInfo"
-        info = session.post(url).json()
-        userInfo = info['data']['userInfoVO']['userInfo']
+        info = session.post(url).json()['data']['userInfoVO']
+        userId = info.get('id')
+        realName = info.get('userInfo').get('realname')
         cookie = 'SESSION' + '=' + session.cookies.get_dict()['SESSION']
+        
+        u = User.query.filter_by(userName=userName).first()
+        if not u:
+            u = User(userName=userName, name=realName)
+            db.session.add(u)
+            db.session.commit()
+        token = u.generate_token(userId)
+
         js = {
-                'code': 1,
-                'msg': 'login succeed',
+                'msg': 'login successfully',
                 'cookie': cookie,
-                'userInfo': {
-                    'userName': loginName,
-                    'realName': userInfo.get('realname'),
-                    'userId': userInfo.get('id'),
-                    }
-                }
+                'token': token,
+                'userName': userName,
+                'realName': realName,
+            }
         return jsonify(js), 200
 

@@ -1,5 +1,5 @@
-from flask import Flask
+from flask import Blueprint
 
-app = Flask(__name__)
+app = Blueprint('api', __name__)
 
 from . import login, courses
