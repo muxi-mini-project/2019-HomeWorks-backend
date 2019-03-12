@@ -84,7 +84,7 @@ def oneClassAssign():
                 'assignName': t.get('title'),
                 'assignId': t.get('id'),
                 'beginTime': t.get('begintime'),
-                'endTime':t.get('endtime'),
+                'endTime': t.get('endtime'),
                 }
         data.append(course_data)
 

@@ -72,7 +72,7 @@
 ## 获取某一课堂任务列表
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/class/assignment |POST  |  cookie(string)  |
+|/api/class/assignment/ |POST  |  cookie(string)  |
 
 ### Post Data
 ```
@@ -94,8 +94,8 @@
         {
             "status": Int,      //未提交：0，待批阅：1，已驳回：2，已批阅：3
             "assignName": String,
-            "beginTime": String,
-            "endTime": String,
+            "beginTime": Int,
+            "endTime": Int,
             "assignId": String,     //任务ID
         }
     ]
@@ -134,8 +134,8 @@
     "className": String,        //课堂（科目）名
     "assignName": String,       //任务（作业）名
     "status": Int,              //未提交：0，待批阅：1，已驳回：2，已批阅：3
-    "beginTime": String,
-    "endTime": String,
+    "beginTime": Int,
+    "endTime": Int,
     "content": String,          //作业要求，颁布的作业
     "pointNum": Int,            //已批阅数
     "isGroup": Int,             //分组作业：1，个人作业：0
