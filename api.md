@@ -136,7 +136,7 @@ None
                     "id": String,
                     "name": String,
                     "ext": String,
-                    "uploadTime": String,
+                    "uploadTime": Int,
               }
     ]
     "submitContent": String,            //作业内容，提交的作业
@@ -332,6 +332,7 @@ None
 401 身份认证错误
 ```
 
+
 ## <center> 名词规范表 </center>
 |关键字|表意|
 |:---:|:---:|
@@ -344,4 +345,3 @@ None
 | siteId  | 课堂站点ID  |
 | assignName | 任务名   |
 | assignId  | 任务ID    |
-

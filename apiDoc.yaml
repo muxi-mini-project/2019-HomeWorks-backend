@@ -10,8 +10,8 @@ basePath: /api
 tags:
   - name: assignment
     description: assignment
-  - name: class
-    description: class
+  - name: course
+    description: course
   - name: user
     description: user
     
@@ -20,7 +20,7 @@ schemes:
   - http
   
 paths:
-  /login:
+  /login/:
     post:
       tags:
         - user
@@ -52,39 +52,33 @@ paths:
             type: object
             required:
               - cookie
-              - userInfo
+              - token
             properties:
               cookie: 
                 type: string
-              code:
-                type: integer
-                description: 成功：1，失败：0
+              token:
+                type: string
               msg:
                 type: string
                 description: 登录结果信息
-              userInfo:
-                type: object
-                description: 用户信息
-                required:
-                  - userId
-                  - userName
-                  - realName
-                properties:
-                  userId:
-                    type: string
-                  userName:
-                    type: string
-                    description: 用户学号
-                  realName:
-                    type: string
-                    description: 用户姓名
+              userName:
+                type: string
+                description: 用户学号
+              realName:
+                type: string
+                description: 用户姓名
+        400:
+          description: 参数不全
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
         401:
           description: 用户名或密码错误
           schema:
             type: object
             properties:
-              code:
-                type: integer
               msg:
                 type: string
    #   security:
@@ -92,12 +86,12 @@ paths:
      #       - 'write:pets'
       #      - 'read:pets'
       
-  /class/list:
-    post:
+  /course/list/:
+    get:
       tags:
-        - class
+        - course
       summary: 课堂列表
-      description: Get class list
+      description: Get course list
       consumes:
         - application/json
       produces:
@@ -108,51 +102,58 @@ paths:
           description: cookie
           required: true
           type: string
-        - name: data
-          in: body
-          schema:
-            required:
-              - userId
-            properties:
-              userId:
-                type: string
+        - name: token
+          in: header
+          required: true
+          type: string
       responses:
         '200':
           description: successful operation
           schema:
             type: object
             properties:
-              code:
-                type: integer
               msg:
                 type: string
               cookie:
                 type: string
-              userId:
-                type: string
               total:
                 type: integer
                 description: 课堂总数
-              classList:
+              courseList:
                 type: array
                 items:
                   properties:
-                    className:
+                    courseName:
                       type: string
                     teacher:
                       type: string
                     siteId:
                       type: string
                       description: 课堂站点ID
+        400:
+          description: 参数不全
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+            
    #   security:
     #    - petstore_auth:
      #       - 'write:pets'
       #      - 'read:pets'
       
-  /class/assignment:
-    post:
+  /course/{siteId}/assignment/list/:
+    get:
       tags:
-        - class
+        - course
       summary: 获取某一课堂任务列表
       description: get assignments of a class
       consumes:
@@ -165,18 +166,15 @@ paths:
           description: cookie
           required: true
           type: string
-        - name: data
-          in: body
-          description: post data
-          schema:
-            required:
-              - userId
-              - siteId
-            properties:
-              userId:
-                type: string
-              siteId:
-                type: string
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: siteId
+          in: path
+          description: ID of courses
+          required: true
+          type: string
       responses:
         '200':
           description: successful operation
@@ -185,11 +183,7 @@ paths:
             properties:
               cookie:
                 type: string
-              code:
-                type: integer
               msg:
-                type: string
-              userId:
                 type: string
               siteId:
                 type: string
@@ -206,19 +200,41 @@ paths:
                       type: string
                       description: 任务/作业名称
                     beginTime:
-                      type: string
+                      type: integer
                       description: 开始时间
                     endTime:
-                      type: string
+                      type: integer
                       description: 结束时间
                     assignId:
                       type: string
                       description: 任务ID
+        400:
+          description: 参数不全
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        404:
+          description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                
       deprecated: false
       #该路由是否不推荐使用/不可用
       
-  /assignment/info:
-    post:
+  /assignment/{siteId}/{assignId}/info/:
+    get:
       tags:
         - assignment
       summary: 任务详情
@@ -233,21 +249,18 @@ paths:
           description: cookie
           required: true
           type: string
-        - name: data
-          in: body
-          description: post data
-          schema:
-            required:
-              - userId
-              - assignId
-              - siteId
-            properties:
-              userId:
-                type: string
-              assignId:
-                type: string
-              siteId:
-                type: string
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: siteId
+          in: path
+          required: true
+          type: string
+        - name: assignId
+          in: path
+          required: true
+          type: string
       responses:
         200:
           description: success
@@ -256,17 +269,13 @@ paths:
             properties:
               cookie:
                 type: string
-              code:
-                type: integer
               msg:
-                type: string
-              userId:
                 type: string
               siteId:
                 type: string
               assignId:
                 type: string
-              className:
+              courseName:
                 type: string
                 description: 课堂名
               assignName:
@@ -276,9 +285,9 @@ paths:
                 type: integer
                 description: 未提交：0，待批阅：1，已驳回：2，已批阅：3
               beginTime:
-                type: string
+                type: integer
               endTime:
-                type: string
+                type: integer
               content:
                 type: string
                 description: 作业要求，颁布的作业
@@ -336,18 +345,39 @@ paths:
                       type: string
                       description: 附件格式
                     uploadTime:
-                      type: string
+                      type: integer
                       description: 附件上传时间
               submitContent:
                 type: string
                 description: 作业内容，提交的作业
+        400:
+          description: 参数不全
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        404:
+          description: not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
       #security:
        # - petstore_auth:
         #    - 'write:pets'
          #   - 'read:pets'
   
-  /assignment/list:
-    post:
+  /assignment/list/:
+    get:
       tags:
         - assignment
       summary: assignment list
@@ -361,14 +391,10 @@ paths:
           description: cookie
           required: true
           type: string
-        - name: data
-          in: body
-          schema:
-            required:
-              - userId
-            properties:
-              userId:
-                type: string
+        - name: token
+          in: header
+          required: true
+          type: string
       responses:
         '200':
           description: successful operation
@@ -377,11 +403,7 @@ paths:
             properties:
               cookie:
                 type: string
-              code:
-                type: integer
               msg:
-                type: string
-              userId:
                 type: string
               total:
                 type: integer
@@ -393,21 +415,35 @@ paths:
                       type: string
                     status:
                       type: integer
-                    className:
+                    courseName:
                       type: string
                     assignName:
                       type: string
                     teacher:
                       type: string
                     beginTime:
-                      type: string
+                      type: integer
                     endTime:
-                      type: string
+                      type: integer
                     assignId:
                       type: string
+        400:
+          description: 参数不全
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
 
-  /userInfo:
-    post:
+  /userInfo/:
+    get:
       tags:
         - user
       summary: user information
@@ -420,15 +456,10 @@ paths:
           in: header
           required: true
           type: string
-        - name: data
-          in: body
-          description: post data
-          schema:
-            required:
-              - userId
-            properties:
-              uerId:
-                type: string
+        - name: token
+          in: header
+          required: true
+          type: string
       responses:
         '200':
           description: successful operation
@@ -437,11 +468,7 @@ paths:
             properties:
               cookie:
                 type: string
-              code:
-                type: integer
               msg:
-                type: string
-              userId:
                 type: string
               realName:
                 type: string
@@ -449,28 +476,24 @@ paths:
                 type: string
               apartment:
                 type: string
-              mail:
+              email:
                 type: string
                 
-  /notice:
-    post:
+  /notice/:
+    get:
       tags:
         - assignment
-      summary: notice
+      summary: 未提交任务提醒
       description: notice the unsubmit assignments
       parameters:
         - name: cookie
           in: header
           required: true
           type: string
-        - name: data
-          in: body
-          schema:
-            required:
-              - userId
-            properties:
-              userId:
-                type: string
+        - name: token
+          in: header
+          required: true
+          type: string
       responses:
         200:
           description: success
@@ -478,11 +501,7 @@ paths:
             properties:
               cookie:
                 type: string
-              code:
-                type: integer
               msg:
-                type: string
-              userId:
                 type: string
               userName:
                 type: string
@@ -495,7 +514,7 @@ paths:
                 type: array
                 items:
                   properties:
-                    className:
+                    courseName:
                       type: string
                     assignName:
                       type: string
@@ -506,12 +525,26 @@ paths:
                     assignId:
                       type: string
                     beginTime:
-                      type: string
+                      type: integer
                     endTime:
-                      type: string
+                      type: integer
+        400:
+          description: 参数不全
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
                       
-  /search:
-    post:
+  /search/:
+    get:
       tags:
         - assignment
       summary: 搜索
@@ -525,15 +558,10 @@ paths:
           in: query
           description: 搜索关键词
           type: string
-        - name: data
-          in: body
-          description: post data
-          schema:
-            required:
-              - userId
-            properties:
-              userId:
-                type: string
+        - name: token
+          in: header
+          required: true
+          type: string
       responses:
         200:
           description: successful operation
@@ -542,11 +570,7 @@ paths:
             properties:
               cookie:
                 type: string
-              code:
-                type: integer
               msg:
-                type: string
-              userId:
                 type: string
               total:
                 type: integer
@@ -560,14 +584,126 @@ paths:
                       type: string
                     assignName:
                       type: string
-                    className:
+                    courseName:
                       type: string
                     status:
                       type: integer
                     beginTime:
-                      type: string
+                      type: integer
                     endTime:
-                      type: string
+                      type: integer
                     teacher:
                       type: string
-
+        400:
+          description: 参数不全
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        404:
+          description: Not found
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+            
+  /mail/:
+    post:
+      tags:
+        - user
+      summary: 添加邮箱
+      parameters:
+        - name: cookie
+          in: header
+          required: true
+          type: string
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: data
+          in: body
+          schema:
+            required:
+              - email
+            properties:
+              email:
+                type: string
+      responses:
+        200:
+          description: success
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+              cookie:
+                type: string
+        400:
+          description: 参数不全
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+    put:
+      tags:
+        - user
+      summary: 修改邮箱
+      parameters:
+        - name: cookie
+          in: header
+          required: true
+          type: string
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: data
+          in: body
+          schema:
+            required:
+              - email
+            properties:
+              email:
+                type: string
+      responses:
+        200:
+          description: success
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+              cookie:
+                type: string
+        400:
+          description: 参数不全
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
