@@ -51,7 +51,7 @@ def courseList():
     cookie = session.cookies.get_dict()['cookies']
     data = {
             'cookie': cookie,
-            'msg': 'Successfully login',
+            'msg': 'Success',
             'total': total,
             'courseList': courseList,
             }
@@ -108,7 +108,7 @@ def oneClassAssign(siteId):
     cookie = session.cookies.get_dict()['cookies']
     js_data = {
             'cookie': cookie,
-            'msg': 'successful',
+            'msg': 'success',
             'siteId': siteId,
             'total': total,
             'data': data,
