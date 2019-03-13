@@ -32,7 +32,7 @@ def assignList():
     total = 0
     assignList = []
     for i in range(course_total):
-        course_list = r.json().get(data).get('list')[i]
+        course_list = r.json().get('data').get('list')[i]
         siteId = course_list.get('siteId')
 
         payload = {
@@ -45,9 +45,10 @@ def assignList():
         rp = session.post(assign_url, json=payload, headers=header)
         assign_total = rp.json().get('data').get('total')
         if not assign_total:
-            total = total + assign_total
-            courseName = course_list.get('courseName')
-            teacher = course_list.get('teacherName')
+            continue
+        total = total + assign_total
+        courseName = course_list.get('courseName')
+        teacher = course_list.get('teacherName')
 
         for j in range(assign_total):
             assignment = rp.json()['data'].get('list')[j]
