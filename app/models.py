@@ -15,7 +15,7 @@ class User(db.Model):
         return s.dumps({
                     'id': self.id,
                     'userId': userId
-                    })
+                    }).decode('utf-8')
 
     @staticmethod
     def get_userId_token(token):
