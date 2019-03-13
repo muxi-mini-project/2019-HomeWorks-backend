@@ -14,6 +14,8 @@ tags:
     description: course
   - name: user
     description: user
+  - name: notice
+    description: notice
     
 schemes:
   - https
@@ -482,7 +484,7 @@ paths:
   /notice/:
     get:
       tags:
-        - assignment
+        - notice
       summary: 未提交任务提醒
       description: notice the unsubmit assignments
       parameters:
@@ -619,7 +621,7 @@ paths:
   /mail/:
     post:
       tags:
-        - user
+        - notice
       summary: 添加邮箱
       parameters:
         - name: cookie
@@ -664,7 +666,7 @@ paths:
                 type: string
     put:
       tags:
-        - user
+        - notice
       summary: 修改邮箱
       parameters:
         - name: cookie
