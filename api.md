@@ -287,7 +287,7 @@ None
 ## 添加邮箱
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/email/add/ |POST  |  cookie, token  |
+|/api/mail/add/ |POST  |  cookie, token  |
 ### Post Data
 ```
 {
@@ -311,7 +311,7 @@ None
 ## 修改邮箱
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/email/modify/ |PUT  |  cookie, token  |
+|/api/mail/modify/ |PUT  |  cookie, token  |
 ### Post Data
 ```
 {
@@ -332,7 +332,6 @@ None
 401 身份认证错误
 ```
 
-
 ## <center> 名词规范表 </center>
 |关键字|表意|
 |:---:|:---:|
@@ -345,3 +344,4 @@ None
 | siteId  | 课堂站点ID  |
 | assignName | 任务名   |
 | assignId  | 任务ID    |
+
