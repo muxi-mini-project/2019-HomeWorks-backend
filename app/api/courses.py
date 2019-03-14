@@ -41,11 +41,11 @@ def courseList():
     data_list = r.json().get('data').get('list')
     total = r.json().get('data').get('total')
     courseList = []
-    for i in range(total):
+    for element in data_list:
         course = {}
-        course['courseName'] = data_list[i].get('courseName')
-        course['teacher'] = data_list[i].get('teacherName')
-        course['siteId'] = data_list[i].get('siteId')
+        course['courseName'] = element.get('courseName')
+        course['teacher'] = element.get('teacherName')
+        course['siteId'] = element.get('siteId')
         courseList.append(course)
 
     cookie = session.cookies.get_dict()['cookies']
@@ -94,14 +94,13 @@ def oneClassAssign(siteId):
     rp_data = r.json().get('data')
     total = rp_data.get('total')
     data = []
-    for i in range(total):
-        t = rp_data.get('list')[i]
+    for element in rp_data.get('list'):
         course_data = {
-                'status': t.get('status'),
-                'assignName': t.get('title'),
-                'assignId': t.get('id'),
-                'beginTime': t.get('begintime'),
-                'endTime': t.get('endtime'),
+                'status': element.get('status'),
+                'assignName': element.get('title'),
+                'assignId': element.get('id'),
+                'beginTime': element.get('begintime'),
+                'endTime': element.get('endtime'),
                 }
         data.append(course_data)
 
