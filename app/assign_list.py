@@ -47,7 +47,7 @@ def assign_list(cookie, userId):
             assign_data = {
                     'assignId': assignId,
                     'assignName': assignName,
-                    'status': status,
+                    'status': int(status),
                     'beginTime': beginTime,
                     'endTime': endTime,
                     'siteId': siteId,

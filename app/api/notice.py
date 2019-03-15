@@ -1,6 +1,7 @@
 import requests
 from flask import jsonify, request
 from . import app
+from ..models import User
 from ..assign_list import assign_list
 
 @app.route('/notice/', methods=['GET'])
@@ -18,13 +19,22 @@ def notice():
         return jsonify({
                 'msg': 'Invalid token'}), 401 
     
-    assign_list = assign_list(cookie, userId)
+    assign_data = assign_list(cookie, userId)
+    assignList = assign_data.get('assignList')
+    total = 0
+    data = []
+    for task in assignList:
+        if task.get('status') == 0:
+            data.append(task)
+            total = total + 1
+
+    user = User.query.filter_by(userId=userId).first()
 
     return_data = {
                 'msg': 'success',
-                'cookie': cookie,
-                'realName': realName,
-                'userName': userName,
+                'cookie': assign_data.get('cookie'),
+                'realName': user.name,
+                'userName': user.userName,
                 'total': total,
                 'data': data,
             }

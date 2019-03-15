@@ -96,7 +96,7 @@ def oneClassAssign(siteId):
     data = []
     for element in rp_data.get('list'):
         course_data = {
-                'status': element.get('status'),
+                'status': int(element.get('status')),
                 'assignName': element.get('title'),
                 'assignId': element.get('id'),
                 'beginTime': element.get('begintime'),
