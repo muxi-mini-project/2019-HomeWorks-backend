@@ -3,6 +3,7 @@ import requests
 from flask import jsonify, request
 from ..models import User
 from ..verify import verify_siteId
+from ..assign_list import assign_list
 
 @app.route('/assignment/list/', methods=['GET'])
 def assignList():
@@ -16,7 +17,17 @@ def assignList():
     userId = User.get_userId_token(token)
     if not userId:
         return jsonify({'msg': 'Invalid token'}), 401
-    
+
+    data = assign_list(cookie, userId)
+    return_data = {
+                'msg': 'success',
+                'cookie': data.get('cookie'),
+                'total': data.get('total'),
+                'assignList': data.get('assignList'),
+            }
+    return jsonify(return_data), 200
+
+"""
     session = requests.session()
     session.cookies.set('cookies', cookie)
 
@@ -77,6 +88,7 @@ def assignList():
             'assignList': assignList,
         }), 200
 
+"""
 
 @app.route('/assignment/<siteId>/<assignId>/info/', methods=['GET'])
 def assignInfo(siteId, assignId):
