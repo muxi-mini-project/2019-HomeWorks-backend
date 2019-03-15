@@ -199,7 +199,6 @@ None
     "cookie": String,
     'realName': String,     //姓名
     'userName': String,     //学号
-    "apartment": String,    //院系
     "email": String,
 }
 ```

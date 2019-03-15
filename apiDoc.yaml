@@ -476,8 +476,6 @@ paths:
                 type: string
               userName:
                 type: string
-              apartment:
-                type: string
               email:
                 type: string
                 
