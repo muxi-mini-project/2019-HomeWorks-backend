@@ -1,7 +1,7 @@
+import requests
 from flask import jsonify, request
 from . import app
 from ..models import User
-from ..verify import verify_userId_token
 
 @app.route('/userInfo/', methods=['GET'])
 def user_info():
@@ -13,12 +13,12 @@ def user_info():
     if not token:
         return jsonify({
                 'msg': 'No token'}), 400
-    userId = verify_userId_token(token)
+    userId = User.get_userId_token(token)
     if not userId:
         return jsonify({
                 'msg': 'Invalid token'}), 401
 
-    session = request.session()
+    session = requests.session()
     session.cookies.set('cookies', cookie)
 
     header = {'cookie': cookie}
@@ -27,7 +27,13 @@ def user_info():
     if userInfo_get.get('id') != userId:
         return jsonify({'msg': 'Invalid token'}), 401
     userName = userInfo_get.get('username')
-    email = User.query.filter_by(userName=userName).first().email
-    d
+    user = User.query.filter_by(userName=userName).first()
 
-    u = User.query.filter_by()
+    return jsonify({
+            'msg': 'success',
+            'cookie': session.cookies.get_dict().get('cookies'),
+            'realName': user.name,
+            'userName': userName,
+            'email': user.email,
+        }), 200
+
