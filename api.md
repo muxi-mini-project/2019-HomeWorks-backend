@@ -116,6 +116,7 @@ None
     "endTime": Int,
     "content": String,                  //作业要求，颁布的作业
     "pointNum": Int,                    //已批阅数
+    "commitNum": Int,                   //已提交数
     "isGroup": Int,                     //分组作业：1，个人作业：0
     "groupNum": Int,                    //小组数
     "studentNum": Int,                  //学生数
@@ -128,6 +129,7 @@ None
                     "id": String,
                     "name": String,
                     "ext": String,      //附件格式
+                    'sourceUrl': string //资源地址
                 }
     ]
     "submitAttachmentNum": Int,         //提交的附件数
@@ -137,6 +139,7 @@ None
                     "name": String,
                     "ext": String,
                     "uploadTime": Int,
+                    'sourceUrl': string //资源地址
               }
     ]
     "submitContent": String,            //作业内容，提交的作业
@@ -187,7 +190,7 @@ None
 ## 个人信息
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/userInfo/ |GET  |  cookie, token  |
+|/api/userInfo/ |GET  |  token  |
 
 ### Post Data
 None
@@ -196,7 +199,6 @@ None
 ```
 {
     "msg": String,
-    "cookie": String,
     'realName': String,     //姓名
     'userName': String,     //学号
     "email": String,
@@ -283,34 +285,10 @@ None
 404 未找到
 ```
 
-## 添加邮箱
-|URL        |Method|header|
-|:--:       |:--:  |:--:  |
-|/api/mail/add/ |POST  |  cookie, token  |
-### Post Data
-```
-{
-    'email': String
-}
-```
-### Return Data
-```
-{
-    'msg': String
-    'cookie': String
-}
-```
-### Status Code
-```
-200 成功
-400 参数不全或格式错误
-401 身份认证错误
-```
-
 ## 修改邮箱
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/mail/modify/ |PUT  |  cookie, token  |
+|/api/mail/modify/ |PUT  |  token  |
 ### Post Data
 ```
 {
@@ -321,7 +299,6 @@ None
 ```
 {
     'msg': String
-    'cookie': String
 }
 ```
 ### Status Code
@@ -344,3 +321,4 @@ None
 | siteId  | 课堂站点ID  |
 | assignName | 任务名   |
 | assignId  | 任务ID    |
+
