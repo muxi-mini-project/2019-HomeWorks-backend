@@ -1,35 +1,11 @@
 from . import app
+from flask import request
 import requests
-from flask import jsonify, request
-from ..models import User
-from ..verify import verify_siteId
-from ..data import assign_list
+from .models import User
 
-@app.route('/assignment/list/', methods=['GET'])
-def assignList():
-    cookie = request.headers.get('cookie')
-    token = request.headers.get('token')
-    if not cookie:
-        return jsonify({'msg': 'No cookie'}), 400
-    if not token:
-        return jsonify({'msg': 'No token'}), 400
-
-    userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({'msg': 'Invalid token'}), 401
-
-    data = assign_list(cookie, userId)
-    return_data = {
-                'msg': 'success',
-                'cookie': data.get('cookie'),
-                'total': data.get('total'),
-                'assignList': data.get('assignList'),
-            }
-    return jsonify(return_data), 200
-
-"""
+def assign_list(cookie, userId):
     session = requests.session()
-    session.cookies.set('cookies', cookie)
+    session.cookies.set("cookies", cookie)
 
     header = {'cookie': cookie}
     payload = {
@@ -72,7 +48,7 @@ def assignList():
             assign_data = {
                     'assignId': assignId,
                     'assignName': assignName,
-                    'status': status,
+                    'status': int(status),
                     'beginTime': beginTime,
                     'endTime': endTime,
                     'siteId': siteId,
@@ -80,39 +56,47 @@ def assignList():
                     'teacher': teacher,
                     }
             assignList.append(assign_data)
+        
+        return {
+                'assignList': assignList,
+                'total': total,
+                'cookie': session.cookies.get_dict().get('cookies'),
+                }
 
-    return jsonify({
-            'msg': 'success',
-            'cookie': session.cookies.get_dict().get('cookies'),
+
+def course_list(cookie, userId):
+    header = {'cookie': cookie}
+    payload = { 
+            'userId': userId,
+            'termCode': '201901',
+            'pageNum': 1,
+            'pageSize': 30, 
+            }
+
+    url = 'http://spoc.ccnu.edu.cn/studentHomepage/getMySite'
+    session = requests.session()
+    session.cookies.set('cookies', cookie)
+
+    r = session.post(url, json = payload, headers=header)
+    data_list = r.json().get('data').get('list')
+    total = r.json().get('data').get('total')
+    courseList = []
+    for element in data_list:
+        course = {}
+        course['courseName'] = element.get('courseName')
+        course['teacher'] = element.get('teacherName')
+        course['siteId'] = element.get('siteId')
+        courseList.append(course)
+
+    cookie = session.cookies.get_dict()['cookies']
+    
+    return {
+            'cookie': cookie,
             'total': total,
-            'assignList': assignList,
-        }), 200
+            'courseList': courseList,
+            }
 
-"""
-
-@app.route('/assignment/<siteId>/<assignId>/info/', methods=['GET'])
-def assignInfo(siteId, assignId):
-    cookie = request.headers.get('cookie')
-    token = request.headers.get('token')
-    if not cookie:
-        return jsonify({
-                'msg': 'No cookie'
-            }), 400
-    if not token:
-        return jsonify({
-                'msg': 'No token'
-            }), 400
-    userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-                'msg': 'Invalid token'
-            }), 401
-
-    if not verify_siteId(siteId, userId):
-        return jsonify({
-                'msg': 'Invalid siteId'
-            }), 404
-
+def assign_info(cookie, userId, siteId, assignId):
     session = requests.session()
     session.cookies.set('cookies', cookie)
 
@@ -122,11 +106,11 @@ def assignInfo(siteId, assignId):
     courseName = session.post(url, headers=header).json().get('data').get('siteName')
 
     url = 'http://spoc.ccnu.edu.cn/assignment/getStudentAssignmentList'
-    payload = {
+    payload = { 
             'siteId': siteId,
             'userId': userId,
             'pageNum': 1,
-            'pageSize': 50,
+            'pageSize': 50, 
             }
     assign_list = session.post(url, json=payload, headers=header).json()\
             .get('data').get('list')
@@ -145,17 +129,15 @@ def assignInfo(siteId, assignId):
         break
 
     if not check_assignId:
-        return jsonify({
-                'msg': 'Invalid assignId'
-            }), 404
+        return 0
 
     url = 'http://spoc.ccnu.edu.cn/assignment/getAssignmentInfoByStudent/' \
             + assignId + '/' + userId
     cer_info = session.post(url, headers=header).json().get('data')
 
     assignAttachment = []
-    for attachment in cer_info.get('assignmentAttachment') or []:
-        dt = {
+    for attachment in cer_info.get('assignmentAttachment') or []: 
+        dt = { 
                 'id': attachment.get('id'),
                 'name': attachment.get('attachmentName'),
                 'ext': attachment.get('ext'),
@@ -163,8 +145,8 @@ def assignInfo(siteId, assignId):
                 }
         assignAttachment.append(dt)
     submitAttachment = []
-    for attachment in cer_info.get('submitAttachment') or []:
-        dt = {
+    for attachment in cer_info.get('submitAttachment') or []: 
+        dt = { 
                 'id': attachment.get('id'),
                 'name': attachment.get('attachmentName'),
                 'uploadTime': attachment.get('uploadTime'),
@@ -199,5 +181,7 @@ def assignInfo(siteId, assignId):
             #作业内容，提交的作业
         }
 
-    return jsonify(return_data), 200
-
+    return {
+            'cookie': cookie,
+            "assign_info": return_data,
+            }

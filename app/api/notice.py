@@ -2,7 +2,7 @@ import requests
 from flask import jsonify, request
 from . import app
 from ..models import User
-from ..assign_list import assign_list
+from ..data import assign_list
 
 @app.route('/notice/', methods=['GET'])
 def notice():
