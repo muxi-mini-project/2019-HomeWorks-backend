@@ -4,6 +4,7 @@ from flask import jsonify, request
 from ..models import User
 from ..verify import verify_siteId
 from ..data import assign_list
+from ..filter_html import filter_tags
 
 @app.route('/assignment/list/', methods=['GET'])
 def assignList():
@@ -120,7 +121,8 @@ def assignInfo(siteId, assignId):
             "status": int(cer_info.get('status')),
             "beginTime": cer_info.get('begintime'),
             "endTime": cer_info.get('endtime'),
-            "content": cer_info.get('content'),                 #作业要求，颁布的作业
+            "content": filter_tags(cer_info.get('content')),
+            #作业要求，颁布的作业
             "pointNum": pointNum,                               #已批阅数
             "commitNum": commitNum,
             "isGroup": int(cer_info.get('isgroup')),            #是否分组
