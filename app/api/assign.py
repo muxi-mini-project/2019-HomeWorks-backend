@@ -62,7 +62,12 @@ def assignInfo(siteId, assignId):
     header = {'cookie': cookie}
     url = 'http://spoc.ccnu.edu.cn/siteController/getSiteBySiteId?siteId=' \
             + siteId
-    courseName = session.post(url, headers=header).json().get('data').get('siteName')
+    try:
+        courseName = session.post(url, headers=header).json().get('data').get('siteName')
+    except:
+        return jsonify({
+                'msg': 'Expired session. Please login again.'
+            }), 401
 
     url = 'http://spoc.ccnu.edu.cn/assignment/getStudentAssignmentList'
     payload = {
