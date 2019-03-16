@@ -20,6 +20,10 @@ def assignList():
         return jsonify({'msg': 'Invalid token'}), 401
 
     data = assign_list(cookie, userId)
+    if not data:
+        return jsonify({
+                'msg': 'Expired cookie. Please login again.'
+                }), 401
     return_data = {
                 'msg': 'success',
                 'cookie': data.get('cookie'),

@@ -17,6 +17,8 @@ def assign_list(cookie, userId):
     url = 'http://spoc.ccnu.edu.cn/studentHomepage/getMySite'
     r = session.post(url, json=payload, headers=header)
     course_total = r.json().get('data').get('total')
+    if course_total == 0:
+        return False
     total = 0
     assignList = []
     for i in range(course_total):
