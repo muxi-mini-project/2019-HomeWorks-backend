@@ -296,6 +296,8 @@ paths:
               pointNum:
                 type: integer
                 description: 已批阅数
+              commitNum:
+                type: integer
               isGroup:
                 type: integer
                 description: 分组作业：1，个人作业：0
@@ -330,6 +332,9 @@ paths:
                     ext:
                       type: string
                       description: 附件格式
+                    sourceUrl:
+                      description: 资源地址
+                      type: string
               submitAttachmentNum:
                 type: integer
                 description: 以作业形式提交的附件的数目
@@ -349,6 +354,8 @@ paths:
                     uploadTime:
                       type: integer
                       description: 附件上传时间
+                    sourceUrl:
+                      type: string
               submitContent:
                 type: string
                 description: 作业内容，提交的作业
@@ -382,7 +389,7 @@ paths:
     get:
       tags:
         - assignment
-      summary: assignment list
+      summary: 任务列表
       description: get the assignment list
       #operationId: uploadFile
       produces:
@@ -448,16 +455,11 @@ paths:
     get:
       tags:
         - user
-      summary: user information
-      description: user information
-      #operationId: placeOrder
+      summary: 个人信息
+      description: user's information
       produces:
         - application/json
       parameters:
-        - name: cookie
-          in: header
-          required: true
-          type: string
         - name: token
           in: header
           required: true
@@ -468,8 +470,6 @@ paths:
           schema:
             type: object
             properties:
-              cookie:
-                type: string
               msg:
                 type: string
               realName:
@@ -477,6 +477,20 @@ paths:
               userName:
                 type: string
               email:
+                type: string
+        400:
+          description: 参数不全
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
                 type: string
                 
   /notice/:
@@ -616,61 +630,12 @@ paths:
               msg:
                 type: string
             
-  /mail/:
-    post:
-      tags:
-        - notice
-      summary: 添加邮箱
-      parameters:
-        - name: cookie
-          in: header
-          required: true
-          type: string
-        - name: token
-          in: header
-          required: true
-          type: string
-        - name: data
-          in: body
-          schema:
-            required:
-              - email
-            properties:
-              email:
-                type: string
-      responses:
-        200:
-          description: success
-          schema:
-            type: object
-            properties:
-              msg:
-                type: string
-              cookie:
-                type: string
-        400:
-          description: 参数不全
-          schema:
-            type: object
-            properties:
-              msg:
-                type: string
-        401:
-          description: 身份认证错误
-          schema:
-            type: object
-            properties:
-              msg:
-                type: string
+  /mail/modify/:
     put:
       tags:
-        - notice
+        - user
       summary: 修改邮箱
       parameters:
-        - name: cookie
-          in: header
-          required: true
-          type: string
         - name: token
           in: header
           required: true
@@ -691,10 +656,8 @@ paths:
             properties:
               msg:
                 type: string
-              cookie:
-                type: string
         400:
-          description: 参数不全
+          description: 参数不全或格式邮箱格式错误
           schema:
             type: object
             properties:
