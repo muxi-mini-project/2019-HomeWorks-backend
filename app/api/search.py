@@ -1,7 +1,7 @@
+import requests
 from flask import jsonify, request
 from . import app
 from ..models import User
-from ..data import assign_list, course_list, assign_info
 
 @app.route('/search/', methods=['GET'])
 def search():
@@ -10,55 +10,84 @@ def search():
     keyword = request.args.get('keyword')
     if not cookie:
         return jsonify({
-                'msg': 'No cookie'}), 400
+                'msg': 'No cookie'}), 400 
     if not token:
         return jsonify({
-                'msg': "No token"}), 400
+                'msg': "No token"}), 400 
     if not keyword:
         return jsonify({
-                'msg': 'No keyword'}), 400
+                'msg': 'No keyword'}), 400 
     userId = User.get_userId_token(token)
     if not userId:
         return jsonify({
-                'msg': 'Invalid token'}), 401
+                'msg': 'Invalid token'}), 401 
 
+    session = requests.session()
+    session.cookies.set('cookies', cookie)
+    
     total = 0
-
-    course_get_data = course_list(cookie, userId)
-    course_list_data = course_get_data.get('courseList')
     course_data = []
-    for course in course_list_data:
-        if keyword in course.get('courseName'):
-            course_data.append(course)
-            total = total + 1
-    cookie = course_get_data.get('cookie')
-
-    assign_get_data = assign_list(cookie, userId)
-    assign_list_data = assign_get_data.get('assignList')
     assign_data = []
-    content_data =[]
-    for task in assign_list_data:
-        if keyword in task.get('assignName'):
-            assign_data.append(task)
-            total = total + 1
-        assignId = task.get('assignId')
-        siteId = task.get('siteId')
-        cookie = assign_get_data.get('cookie')
+    content_data = []
 
-        info_get_data = assign_info(cookie, userId, siteId, assignId)
-        assign_info_data = info_get_data.get('assign_info')
-        if keyword in assign_info_data.get('content'):
-            content_data.append(assign_info_data)
+    header = {'cookie': cookie}
+    payload = {
+            'userId': userId,
+            'termCode': '201901',
+            'pageNum': 1,
+            'pageSize': 30,
+            }
+    url = 'http://spoc.ccnu.edu.cn/studentHomepage/getMySite'
+    r = session.post(url, json = payload, headers=header)
+    data_list = r.json().get('data').get('list')
+    for course in data_list:
+        courseName = course.get('courseName')
+        siteId = course.get('siteId')
+        if keyword in courseName:
+            c = {}
+            c['courseName'] = courseName
+            c['siteId'] = siteId
+            course_data.append(c)
             total = total + 1
-        cookie = info_get_data.get('cookie')
+        
+        cookie = session.cookies.get_dict().get('cookies')
+        url = 'http://spoc.ccnu.edu.cn/assignment/getStudentAssignmentList'
+        payload = { 
+                'siteId': siteId,
+                'userId': userId,
+                'pageNum': 1,
+                'pageSize': 50, 
+                }
+        rp = session.post(url, json=payload, headers=header)
+        assign_get_list = rp.json().get('data').get('list')
+        for task in assign_get_list:
+            assignName = task.get('title')
+            if keyword in assignName:
+                total = total + 1
+                js = {
+                        'assignId': task.get('id'),
+                        'siteId': siteId,
+                        'assignName': assignName,
+                        'courseName': courseName,
+                        }
+                assign_data.append(js)
+            if keyword in task.get('content'):
+                total = total + 1
+                js = {
+                        'assignId': task.get('id'),
+                        'siteId': siteId,
+                        'assignName': assignName,
+                        'courseName': courseName,
+                        }
+                content_data.append(js)
 
     return_data = {
-                'msg': 'success',
+                'msg': 'success', 
+                'cookie': session.cookies.get_dict().get('cookies'),
                 'total': total,
-                'cookie': cookie,
-                'assign_data': assign_data,
-                'course_data': course_data,
-                'content_data': content_data,
+                'courseData': course_data,
+                'assignData': assign_data,
+                'contentData': content_data,
             }
     return jsonify(return_data), 200
-    
+

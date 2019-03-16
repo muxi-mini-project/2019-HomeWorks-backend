@@ -588,7 +588,15 @@ paths:
                 type: string
               total:
                 type: integer
-              data:
+              courseData:
+                type: array
+                items:
+                  properties:
+                    siteId:
+                      type: string
+                    courseName:
+                      type: string
+              assignData:
                 type: array
                 items:
                   properties:
@@ -600,13 +608,17 @@ paths:
                       type: string
                     courseName:
                       type: string
-                    status:
-                      type: integer
-                    beginTime:
-                      type: integer
-                    endTime:
-                      type: integer
-                    teacher:
+              contentData:
+                type: array
+                items:
+                  properties:
+                    assignId:
+                      type: string
+                    siteId:
+                      type: string
+                    assignName:
+                      type: string
+                    courseName:
                       type: string
         400:
           description: 参数不全

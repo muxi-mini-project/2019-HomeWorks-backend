@@ -263,13 +263,13 @@ None
     "msg": String,
     "cookie": String,
     "total": Int,
-    "course_data": [
+    "courseData": [
         {
             "courseName": String,
             "siteId": String,
         }
     ]
-    "assign_data": [
+    "assignData": [
         {
             "assignId": String,
             "siteId": String,
@@ -277,7 +277,7 @@ None
             "courseName": String,
         }
     ]
-    "content_data": [
+    "contentData": [
         {
             "assignId": String,
             "siteId": String,
