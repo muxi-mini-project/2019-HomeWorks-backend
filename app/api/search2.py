@@ -61,13 +61,13 @@ def search2():
         rp = session.post(url, json=payload, headers=header)
         assign_get_list = rp.json().get('data').get('list')
         for task in assign_get_list:
-            title = task.get('title')
-            if keyword in title:
+            assignName = task.get('title')
+            if keyword in assignName:
                 total = total + 1
                 js = {
                         'assignId': task.get('id'),
                         'siteId': siteId,
-                        'title': title,
+                        'assignName': assignName,
                         'courseName': courseName,
                         }
                 assign_data.append(js)
@@ -76,6 +76,7 @@ def search2():
                 js = {
                         'assignId': task.get('id'),
                         'siteId': siteId,
+                        'assignName': assignName,
                         'courseName': courseName,
                         }
                 content_data.append(js)

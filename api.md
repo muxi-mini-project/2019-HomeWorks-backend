@@ -263,16 +263,26 @@ None
     "msg": String,
     "cookie": String,
     "total": Int,
-    "data": [
+    "course_data": [
+        {
+            "courseName": String,
+            "siteId": String,
+        }
+    ]
+    "assign_data": [
         {
             "assignId": String,
             "siteId": String,
             "assignName": String,
             "courseName": String,
-            "status": Int,
-            "beginTime": Int,
-            "endTime": Int,
-            "teacher": String,
+        }
+    ]
+    "content_data": [
+        {
+            "assignId": String,
+            "siteId": String,
+            "assignName": String,
+            "courseName": String,
         }
     ]
 }
@@ -321,4 +331,3 @@ None
 | siteId  | 课堂站点ID  |
 | assignName | 任务名   |
 | assignId  | 任务ID    |
-
