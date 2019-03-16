@@ -1,4 +1,4 @@
-import requests
+import requests, re
 from flask import jsonify, request
 from . import app
 from ..models import User
@@ -36,8 +36,8 @@ def mail_modify():
                 'msg': 'No email'}), 400
 
     # 验证是否为合规的邮箱，需要正则表达式
-    if email:
-        pass
+    if not re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net]{1,3}$', email):
+        return jsonify({'msg': 'Invalid email'}), 400
 
     userId = User.get_userId_token(token)
     if not userId:
