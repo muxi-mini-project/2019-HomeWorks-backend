@@ -590,6 +590,7 @@ paths:
                 type: integer
               courseData:
                 type: array
+                description: 课程名中含有关键字
                 items:
                   properties:
                     siteId:
@@ -598,6 +599,7 @@ paths:
                       type: string
               assignData:
                 type: array
+                description: 作业名中含有关键字
                 items:
                   properties:
                     assignId:
@@ -610,6 +612,7 @@ paths:
                       type: string
               contentData:
                 type: array
+                description: 作业内容中含有关键字
                 items:
                   properties:
                     assignId:

@@ -263,12 +263,14 @@ None
     "msg": String,
     "cookie": String,
     "total": Int,
+	#课程名中含有关键字
     "courseData": [
         {
             "courseName": String,
             "siteId": String,
         }
     ]
+	#作业名中含有关键字
     "assignData": [
         {
             "assignId": String,
@@ -277,6 +279,7 @@ None
             "courseName": String,
         }
     ]
+	#作业内容中含有关键字
     "contentData": [
         {
             "assignId": String,
