@@ -48,7 +48,7 @@ def search():
             c['courseName'] = courseName
             c['siteId'] = siteId
             course_data.append(c)
-            total = total + 1
+            total += 1
         
         cookie = session.cookies.get_dict().get('cookies')
         url = 'http://spoc.ccnu.edu.cn/assignment/getStudentAssignmentList'
@@ -63,7 +63,7 @@ def search():
         for task in assign_get_list:
             assignName = task.get('title')
             if keyword in assignName:
-                total = total + 1
+                total += 1
                 js = {
                         'assignId': task.get('id'),
                         'siteId': siteId,
@@ -72,7 +72,7 @@ def search():
                         }
                 assign_data.append(js)
             if keyword in task.get('content'):
-                total = total + 1
+                total += 1
                 js = {
                         'assignId': task.get('id'),
                         'siteId': siteId,

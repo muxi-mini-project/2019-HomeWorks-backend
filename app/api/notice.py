@@ -26,7 +26,7 @@ def notice():
     for task in assignList:
         if task.get('status') == 0:
             data.append(task)
-            total = total + 1
+            total += 1
 
     user = User.query.filter_by(userId=userId).first()
 
