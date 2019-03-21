@@ -43,9 +43,9 @@ None
 ```
 {
     "msg": String,
-    'cookie': String,
-    'total': Int,
-    'courseList': [
+    "cookie": String,
+    "total": Int,
+    "courseList": [
             {
                 "courseName": String,
                 "teacher": String,
@@ -131,7 +131,7 @@ None
                     "ext": String,      //附件格式
                     'sourceUrl': string //资源地址
                 }
-    ]
+    ],
     "submitAttachmentNum": Int,         //提交的附件数
     "submitAttachment": [
               {
@@ -139,9 +139,9 @@ None
                     "name": String,
                     "ext": String,
                     "uploadTime": Int,
-                    'sourceUrl': string //资源地址
+                    "sourceUrl": string //资源地址
               }
-    ]
+    ],
     "submitContent": String,            //作业内容，提交的作业
 }
 ```
@@ -164,9 +164,9 @@ None
 ```
 {
     "msg": String,
-    'cookie': String,
+    "cookie": String,
     "total": Int,
-    'assignList': [
+    "assignList": [
         {
             "siteId": String,
             "status": Int,
@@ -199,8 +199,8 @@ None
 ```
 {
     "msg": String,
-    'realName': String,     //姓名
-    'userName': String,     //学号
+    "realName": String,     //姓名
+    "userName": String,     //学号
     "email": String,
 }
 ```
@@ -268,7 +268,7 @@ None
             "courseName": String,
             "siteId": String,
         }
-    ]
+    ],
     "assignData": [                 #作业名中含有关键字
         {
             "assignId": String,
@@ -276,7 +276,7 @@ None
             "assignName": String,
             "courseName": String,
         }
-    ]
+    ],
     "contentData": [                #作业内容中含有关键字
         {
             "assignId": String,
@@ -302,13 +302,13 @@ None
 ### Post Data
 ```
 {
-    'email': String
+    "email": String
 }
 ```
 ### Return Data
 ```
 {
-    'msg': String
+    "msg": String
 }
 ```
 ### Status Code
