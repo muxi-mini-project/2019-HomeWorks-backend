@@ -1,0 +1,6 @@
+亲爱的{{ name }}:
+	你目前有{{ data.get('total') }}项云课堂作业即将截止，作业如下:
+	{% for task in data.get('assignList') %}
+		{{ task.get('courseName')}}    {{task.get('assignName') }}
+		截止时间：{{ task.get('endTime') }}
+	{% endfor %}
