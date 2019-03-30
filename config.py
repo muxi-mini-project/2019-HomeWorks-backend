@@ -16,7 +16,7 @@ class Config(object):
     MAIL_USE_SSL = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = 'xxx <xxx@qq.com>'
+    MAIL_DEFAULT_SENDER = 'Shadow <1142319190@qq.com>'
 
 class Celery_config(object):
     # Broker and Backend
@@ -27,14 +27,15 @@ class Celery_config(object):
     CELERY_TIMEZONE='Asia/Shanghai'
 
     CELERY_IMPORTS = ( 
-        'app.email_notice'
+        'app.email_server'
     )   
 
     # schedules
-    CELERYBEAT_SCHEDULE = { 
+    CELERYBEAT_SCHEDULE = {
         'add-every-7': {
-            'task': 'app.email_notice.send_mail',
+            'task': 'app.email_server.send_mail_notice',
             'schedule': crontab(hour=7, minute=30),
+#            'schedule': timedelta(seconds=30)
         }
     }   
 

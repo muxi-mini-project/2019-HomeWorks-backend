@@ -1,6 +1,6 @@
-from app import email_notice
-from app.email_notice import celery_app
+from app import email_server
+from app.email_server import celery_app
 
-email_notice.send_mail.apply_async()
-#email_notice.hello.apply_async()
-
+email_server.send_mail_notice.apply_async()
+#email_server.hello.apply_async()
+#email_server.send_email_verify.apply_async()
