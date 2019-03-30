@@ -1,5 +1,6 @@
 from . import db, app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from random import randint
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,3 +32,33 @@ class User(db.Model):
             return None
         return userId
 
+    def generate_email_token(self, email):
+        code = randint(1000, 9999)  #生成(1000,9999]的四位验证码
+        s = Serializer(app.config['SECRET_KEY'], expires_in=600)    #有效时间：10分钟
+        """
+        return s.dumps({
+                    'id': self.id,
+                    'email': email,
+                    'code': code
+                }).decode('utf-8')
+        """
+        token = s.dumps({
+                    'id': self.id,
+                    'email': email,
+                    'code': code
+                }).decode('utf-8')
+        return {'token': token, 'code': code}
+
+    @staticmethod
+    def verify_email(email, code, token):
+        s = Serializer(app.config["SECRET_KEY"])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        id = data.get('id')
+        email_get = data.get("email")
+        code_get = data.get('code')
+        if not id or code != code_get or email != email_get:
+            return False
+        return True
