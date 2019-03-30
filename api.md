@@ -298,11 +298,12 @@ None
 ## 修改邮箱
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/mail/modify/ |PUT  |  token  |
+|/api/mail/modify/ |PUT  |  token，verifyCodeToken  |
 ### Post Data
 ```
 {
-    "email": String
+    "email": String,
+    "verifyCode": int
 }
 ```
 ### Return Data
@@ -314,10 +315,33 @@ None
 ### Status Code
 ```
 200 成功
-400 参数不全或格式错误
+400 请求错误
 401 身份认证错误
 ```
-
+## 发送邮箱验证码
+|URL        |Method|header|
+|:--:       |:--:  |:--:  |
+|/api/mail/modify/sendVerifyCode/ |POST  |  token  |
+### Post Data
+```
+{
+    "email": String,
+}
+```
+### Return Data
+```
+{
+    "msg": String,
+    "verifyCodeToken": String
+}
+```
+### Status Code
+```
+200 成功
+400 请求错误
+401 身份认证错误
+404 用户不存在
+```
 
 ## <center> 名词规范表 </center>
 |关键字|表意|

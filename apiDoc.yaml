@@ -16,6 +16,8 @@ tags:
     description: user
   - name: notice
     description: notice
+  - name: mail
+    description: mail
     
 schemes:
   - https
@@ -648,8 +650,56 @@ paths:
   /mail/modify/:
     put:
       tags:
-        - user
+        - mail
       summary: 修改邮箱
+      parameters:
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: verifyCodeToken
+          in: header
+          required: true
+          type: string
+        - name: data
+          in: body
+          schema:
+            required:
+              - email
+              - verifyCode
+            properties:
+              email:
+                type: string
+              verifyCode:
+                type: integer
+      responses:
+        200:
+          description: success
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        400:
+          description: 请求错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                
+  /mail/modify/sendVerifyCode/:
+    post:
+      tags:
+        - mail
+      summary: 发送邮箱验证码
       parameters:
         - name: token
           in: header
@@ -672,7 +722,7 @@ paths:
               msg:
                 type: string
         400:
-          description: 参数不全或格式邮箱格式错误
+          description: 请求错误
           schema:
             type: object
             properties:
@@ -680,6 +730,13 @@ paths:
                 type: string
         401:
           description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        404:
+          description: 用户不存在
           schema:
             type: object
             properties:
