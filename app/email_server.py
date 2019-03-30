@@ -47,9 +47,8 @@ def get_assign(userId):
             }
 
 @celery_app.task
-def send_mail():
+def send_mail_notice():
     recipients = get_recipients()
-    print(recipients)
     for user in recipients:
         assign_data = get_assign(user.get('userId'))
         print(user.get('name') + str(assign_data.get('total')))
@@ -59,18 +58,18 @@ def send_mail():
         with flask_app.app_context():
             msg = Message("云课堂作业提醒!",
                     recipients = [user.get('email')])
-            msg.body = render_template('email.txt', name=user.get('name'), data=assign_data)
-            msg.html = render_template('email.html', name=user.get('name'), data=assign_data)
+            msg.body = render_template('email_notice.txt', name=user.get('name'), data=assign_data)
+            msg.html = render_template('email_notice.html', name=user.get('name'), data=assign_data)
             mail.send(msg)
 #            return "Best wish!"
         print('Sended to U!>_<')
 
 
 def email_verify(recipient, code):
-    email_verify_send(recipient, code)
+    send_email_verify(recipient, code)
 
 @celery_app.task
-def email_verify_send(recipient, code):
+def send_email_verify(recipient, code):
     with flask_app.app_context():
         msg = Message("邮箱验证", recipients = [recipient])
         msg.body = render_template('email_verify.txt', code=code)
