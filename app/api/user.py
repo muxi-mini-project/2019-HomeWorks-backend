@@ -1,4 +1,4 @@
-import requests, re
+import re
 from flask import jsonify, request
 from . import app
 from ..models import User
@@ -31,6 +31,14 @@ def mail_modify():
     if not token:
         return jsonify({
             'msg': 'No token'}), 400
+    verify_code_token = request.headers.get('verifyCodeToken')
+    if not verify_code_token:
+        return jsonify({
+            'msg': 'No verifyCodeToken'}), 400
+    verify_code = request.get_json().get('verifyCode')
+    if not verify_code:
+        return jsonify({
+            'msg': 'No verifyCode'}), 400
     email = request.get_json().get('email')
     if not email:
         return jsonify({
@@ -45,12 +53,16 @@ def mail_modify():
         return jsonify({
                 'msg': 'Invalid token'}), 401
 
+    if not User.verify_email(email, verify_code, verify_code_token):
+        return jsonify({
+                'msg': 'Wrong verifyCode'}), 400
+
     User.query.filter_by(userId=userId).update({'email': email})
     db.session.commit()
 
     return jsonify({'msg': 'success'}), 200
 
-@app.route('/mail/modify/send/', methods=['POST'])
+@app.route('/mail/modify/sendVerifyCode/', methods=['POST'])
 def mail_verify():
     token = request.headers.get('token')
     if not token:
@@ -64,6 +76,11 @@ def mail_verify():
     # 验证是否为合规的邮箱，需要正则表达式
     if not re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net]{1,3}$', email):
         return jsonify({'msg': 'Invalid email'}), 400
+
+    #验证此邮箱是否已经存在
+    if User.query.filter_by(email=email).first():
+        return jsonify({
+                'msg': 'Email has already existed'}), 400
 
     userId = User.get_userId_token(token)
     if not userId:
