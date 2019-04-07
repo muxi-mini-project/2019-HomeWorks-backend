@@ -65,7 +65,7 @@ def assign_list(cookie, userId):
                 'cookie': session.cookies.get_dict().get('cookies'),
                 }
 
-
+'''
 def course_list(cookie, userId):
     header = {'cookie': cookie}
     payload = { 
@@ -187,3 +187,4 @@ def assign_info(cookie, userId, siteId, assignId):
             'cookie': cookie,
             "assign_info": return_data,
             }
+'''
