@@ -742,3 +742,45 @@ paths:
             properties:
               msg:
                 type: string
+
+  /mail/isSend/modify/:
+    put:
+      tags:
+        - mail
+      summary: 邮件提醒是否使用修改
+      parameters:
+        - name: token
+          in: header
+          required: true
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+              isSend:
+                type: boolean
+        400:
+          description: 请求错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        404:
+          description: 用户不存在
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string

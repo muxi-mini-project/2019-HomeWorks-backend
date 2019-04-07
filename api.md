@@ -343,6 +343,28 @@ None
 404 用户不存在
 ```
 
+## 邮件提醒是否使用修改
+|URL        |Method|header|
+|:--:       |:--:  |:--:  |
+|/api/mail/isSend/modify/ |POST  |  token  |
+### Post Data
+None
+
+### Return Data
+```
+{
+    "msg": String,
+    "isSend": Boolean
+}
+```
+### Status Code
+```
+200 成功
+400 请求错误
+401 身份认证错误
+404 用户不存在
+```
+
 ## <center> 名词规范表 </center>
 |关键字|表意|
 |:---:|:---:|
