@@ -36,7 +36,7 @@ def login():
         
         u = User.query.filter_by(userName=userName).first()
         if not u:
-            u = User(userName=userName, name=realName, userId=userId)
+            u = User(userName=userName, name=realName, userId=userId, email_send=True)
             db.session.add(u)
             db.session.commit()
         token = u.generate_token(userId)

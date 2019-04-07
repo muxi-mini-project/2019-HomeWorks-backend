@@ -15,7 +15,7 @@ def get_recipients():
     users = User.query.all()
     recipients = []
     for u in users:
-        if u.email:
+        if u.email and u.email_send:
             recipients.append({
                     'email': u.email,
                     'name': u.name,

@@ -79,3 +79,26 @@ def mail_verify():
     return jsonify({
             'verifyCodeToken': get_token.get('token'),
             'msg': '已发送验证码'}), 200
+
+@app.route("mail/isSend/modify/", methods=['PUT'])
+def is_send_modify():
+    token = request.headers.get('token')
+    if not token:
+        return jsonify({
+            'msg': 'No token'}), 400
+
+    userId = User.get_userId_token(token)
+    if not userId:
+        return jsonify({
+                'msg': 'Invalid token'}), 401
+    
+    u = User.query.filter_by(userId=userId).first()
+    if not u:
+        return jsonify({'msg': 'No user'}), 404
+
+    u.email_send = not u.email_send
+    db.session.commit()
+
+    return jsonify({
+            "msg": "success",
+            "isSend": u.email_send}), 200

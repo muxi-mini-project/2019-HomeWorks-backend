@@ -8,6 +8,7 @@ class User(db.Model):
     name = db.Column(db.String(10), unique=False, index=False)
     userId = db.Column(db.String(50), unique=True, index=True)
     email = db.Column(db.String(20), unique=True, index=True)
+    email_send = db.Column(db.Boolean)
 
     def __repr__(self):
         return '<User {} {}>'.format(self.userName, self.name)
