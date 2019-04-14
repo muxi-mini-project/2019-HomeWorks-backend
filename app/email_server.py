@@ -71,15 +71,15 @@ def confirm_notice_time(userId, closest_time):
     time = (closest_time - time.time()) / 3600
     notice_time_data = NoticeTimeForm.query.filter_by(userId=userId).all()
 
-    # 未设置时间节点默认情况下为1小时
-    if not notice_time_data and 1 - 0.1 <= time <= 1 + 0.1:
+    # 未设置时间节点默认情况下为1小时，前后偏差6分钟
+    if not notice_time_data and 0.9 <= time <= 1.1:
         return True
     else:
         return False
 
     # 查找符合的时间节点
     for data in notice_time_data:
-        # 前后偏差约5分钟
+        # 前后偏差6分钟
         if data.notice_time - 0.1 <= time <= data.notice_time + 0.1:
             return True
     return False
