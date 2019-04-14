@@ -343,7 +343,7 @@ None
 404 用户不存在
 ```
 
-## 邮件提醒是否使用修改
+## 邮件提醒启用状态更改
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
 |/api/mail/isSend/modify/ |POST  |  token  |
@@ -368,7 +368,7 @@ None
 ## 添加时间节点
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/mail/noticeTime/add |POST  |  token  |
+|/api/mail/noticeTime/add/ |POST  |  token  |
 ### Post Data
 ```
 {
@@ -380,7 +380,7 @@ None
 ```
 {
     "msg": String,
-    "noticeTimeId": Int,
+    "noticeTimeId": String,
 }
 ```
 ### Status Code
@@ -391,10 +391,38 @@ None
 404 用户不存在
 ```
 
+## 获取全部时间节点
+|URL        |Method|header|
+|:--:       |:--:  |:--:  |
+|/api/mail/noticeTime/get/ |GET  |  token  |
+### Post Data
+None
+
+### Return Data
+```
+{
+    "msg": String,
+    "noticeTimeList": [{
+        "noticeTime": Int,
+        "noticeTimeId": String,
+        "noticeTimeStatus": Int,    //开启：1，关闭：0
+        },
+    ]
+    "total": Int,
+}
+```
+### Status Code
+```
+200 成功
+400 请求错误
+401 身份认证错误
+404 未找到
+```
+
 ## 修改时间节点
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/mail/noticeTime/{noticeTimeId: Int}/modify | PUT  | token  |
+|/api/mail/noticeTime/{noticeTimeId: String}/modify | PUT  | token  |
 ### Post Data
 ```
 {
@@ -406,7 +434,7 @@ None
 ```
 {
     "msg": String,
-    "noticeTimeId": Int,
+    "noticeTimeId": String,
 }
 ```
 ### Status Code
@@ -414,16 +442,12 @@ None
 200 成功
 400 请求错误
 401 身份认证错误
-404 用户不存在
+404 未找到
 ```
 ## 改变时间节点启用状态
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/mail/noticeTime/{noticeTimeId: Int}/statusModify | PUT  | token  |
-### URL Params
-```
-status: Int
-```
+|/api/mail/noticeTime/{noticeTimeId: String}/changeStatus/ | PUT  | token  |
 ### Post data
 None
 
@@ -438,19 +462,23 @@ None
 200 成功
 400 请求错误
 401 身份认证错误
-404 用户不存在
+404 未找到
 ```
-## 删除时间节点
+## 移除时间节点
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/mail/noticeTime/{noticeTimeId: Int}/delete | DELETE  | token  |
+|/api/mail/noticeTime/delete/ | DELETE  | token  |
 ### Post Data
-None
-
+```
+{
+    "noticeTimeId": 
+}
+```
 ### Return Data
 ```
 {
     "msg": String,
+    "statusMessage": String,
 }
 ```
 ### Status Code
@@ -458,7 +486,7 @@ None
 200 成功
 400 请求错误
 401 身份认证错误
-404 用户不存在
+404 未找到
 ```
 
 ## <center> 名词规范表 </center>
