@@ -18,7 +18,7 @@ DDL_TIME = 30
 def get_recipients():
     users = User.query.all()
     recipients = []
-    for u in users:
+        for u in users:
         # 是否邮箱不为空且开启邮件提醒功能
         if u.email and u.email_send:
             recipients.append({
@@ -28,35 +28,61 @@ def get_recipients():
                 })
     return recipients
 
-def get_notice_time(userId):
-    all_data_filter = NoticeTimeForm.query.filter_by(userId=userId).all()
-    for data in all_data_filter:
-        pass
-
-
 # 获取需要提醒的云课堂任务
 def get_assign(userId):
     data = assign_list('', userId).get('assignList')
     total = 0
     assign_data = []
+    # 当前时间，17位的浮点型数值
     now = time.time()
+    # 距现在最近的任务的时间，初始为最大的13位数
+    closest_time = 9999999999999
+
     for task in data:
+        endTime = task.get('endTime')
         # 任务未完成且当前时间距ddl短于DDL_TIME，则该任务需要提醒
         if not task.get('status') and \
-                0 < (task.get('endTime')/1000 - now) / (60*60*24) <= DDL_TIME:
+                0 < (endTime / 1000 - now) / (60*60*24) <= DDL_TIME:
+
+            # 获取距现在最近的任务时间
+            closest_time = endTime if closest_time > endTime else closest_time
+
+            # 将时间戳转化为字符串形式的时间
             #t = task.get('endTime')
-            t = t / 1000 if len(str(t))==13 else task.get('endTime')
-            endTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(t))
+            t = t / 1000 if len(str(t))==13 else endTime
+            end_time_string = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(t))
             assign_data.append({
                     'courseName': task.get('courseName'),
                     'assignName': task.get("assignName"),
-                    'endTime': endTime
+                    'endTime': end_time_string,
                 })
             total += 1
+
     return {
             'total': total,
             'assignList': assign_data,
+            'closest_time': closest_time,
             }
+
+# 与设置的时间节点是否吻合
+def confirm_notice_time(userId, closest_time):
+    #now = time.time()
+    # 间隔的小时
+    time = (closest_time - time.time()) / 3600
+    notice_time_data = NoticeTimeForm.query.filter_by(userId=userId).all()
+
+    # 未设置时间节点默认情况下为1小时
+    if not notice_time_data and 1 - 0.1 <= time <= 1 + 0.1:
+        return True
+    else:
+        return False
+
+    # 查找符合的时间节点
+    for data in notice_time_data:
+        # 前后偏差约5分钟
+        if data.notice_time - 0.1 <= time <= data.notice_time + 0.1:
+            return True
+    return False
 
 # 异步发送邮件提醒
 @celery_app.task
@@ -65,7 +91,8 @@ def send_mail_notice():
     for user in recipients:
         assign_data = get_assign(user.get('userId'))
         print(user.get('name') + str(assign_data.get('total')))
-        if not assign_data.get('total'):
+        if not assign_data.get('total') or \
+            not confirm_notice_time(user.get('userId'), user.get('closest_time')):
             continue
 
         with flask_app.app_context():
