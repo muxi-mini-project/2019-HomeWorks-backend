@@ -365,6 +365,102 @@ None
 404 用户不存在
 ```
 
+## 添加时间节点
+|URL        |Method|header|
+|:--:       |:--:  |:--:  |
+|/api/mail/noticeTime/add |POST  |  token  |
+### Post Data
+```
+{
+    "noticeTime": int,
+}
+```
+
+### Return Data
+```
+{
+    "msg": String,
+    "noticeTimeId": Int,
+}
+```
+### Status Code
+```
+200 成功
+400 请求错误
+401 身份认证错误
+404 用户不存在
+```
+
+## 修改时间节点
+|URL        |Method|header|
+|:--:       |:--:  |:--:  |
+|/api/mail/noticeTime/{noticeTimeId: Int}/modify | PUT  | token  |
+### Post Data
+```
+{
+    "noticeTime": Int,
+}
+```
+
+### Return Data
+```
+{
+    "msg": String,
+    "noticeTimeId": Int,
+}
+```
+### Status Code
+```
+200 成功
+400 请求错误
+401 身份认证错误
+404 用户不存在
+```
+## 改变时间节点启用状态
+|URL        |Method|header|
+|:--:       |:--:  |:--:  |
+|/api/mail/noticeTime/{noticeTimeId: Int}/statusModify | PUT  | token  |
+### URL Params
+```
+status: Int
+```
+### Post data
+None
+
+### Return Data
+```
+{
+    "msg": String,
+}
+```
+### Status Code
+```
+200 成功
+400 请求错误
+401 身份认证错误
+404 用户不存在
+```
+## 删除时间节点
+|URL        |Method|header|
+|:--:       |:--:  |:--:  |
+|/api/mail/noticeTime/{noticeTimeId: Int}/delete | DELETE  | token  |
+### Post Data
+None
+
+### Return Data
+```
+{
+    "msg": String,
+}
+```
+### Status Code
+```
+200 成功
+400 请求错误
+401 身份认证错误
+404 用户不存在
+```
+
 ## <center> 名词规范表 </center>
 |关键字|表意|
 |:---:|:---:|

@@ -1,6 +1,7 @@
 from . import db, app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from random import randint
+import time
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -63,3 +64,20 @@ class User(db.Model):
         if not id or code != code_get or email != email_get:
             return False
         return True
+
+class NoticeTimeForm(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    userId = db.Column(db.String(50), unique=False, index=True)
+    notice_time = db.Column(db.Integer, unique=False, index=False)
+    notice_time_id = db.Column(db.String(50), unique=True, index=True)
+    is_active = db.Column(db.Boolean)
+
+    def __repr__(self):
+        return '<NoticeTime {} {}>'.format(self.notice_time, self.userId)
+
+
+def generate_notice_time_id(userName):
+    now = int(time.time())
+    notice_time_id = str(now) + userName
+    return notice_time_id
+

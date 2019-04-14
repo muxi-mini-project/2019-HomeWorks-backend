@@ -16,3 +16,4 @@ def verify_siteId(siteId, userId):
         if siteId == aim_siteId:
             return True
     return False
+

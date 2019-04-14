@@ -27,26 +27,26 @@ def login():
         return jsonify({
                 'msg': 'login failed',
                 }), 401
-    else:
-        url =  "http://spoc.ccnu.edu.cn/userInfo/getUserInfo"
-        info = session.post(url).json()['data']['userInfoVO']
-        userId = info.get('id')
-        realName = info.get('userInfo').get('realname')
-        cookie = 'SESSION' + '=' + session.cookies.get_dict()['SESSION']
-        
-        u = User.query.filter_by(userName=userName).first()
-        if not u:
-            u = User(userName=userName, name=realName, userId=userId, email_send=True)
-            db.session.add(u)
-            db.session.commit()
-        token = u.generate_token(userId)
+    
+    url =  "http://spoc.ccnu.edu.cn/userInfo/getUserInfo"
+    info = session.post(url).json()['data']['userInfoVO']
+    userId = info.get('id')
+    realName = info.get('userInfo').get('realname')
+    cookie = 'SESSION' + '=' + session.cookies.get_dict()['SESSION']
+    
+    u = User.query.filter_by(userName=userName).first()
+    if not u:
+        u = User(userName=userName, name=realName, userId=userId, email_send=True)
+        db.session.add(u)
+        db.session.commit()
+    token = u.generate_token(userId)
 
-        js = {
-                'msg': 'login successfully',
-                'cookie': cookie,
-                'token': token,
-                'userName': userName,
-                'realName': realName,
-            }
-        return jsonify(js), 200
+    js = {
+            'msg': 'login successfully',
+            'cookie': cookie,
+            'token': token,
+            'userName': userName,
+            'realName': realName,
+        }
+    return jsonify(js), 200
 
