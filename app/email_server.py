@@ -6,12 +6,12 @@ from config import Celery_config
 from . import app as flask_app
 from . import mail
 from .data import assign_list
-from .models import User
+from .models import User, NoticeTimeForm
 
 celery_app = Celery('email')
 celery_app.config_from_object(Celery_config)
 
-# 距ddl时间
+# 距ddl时间（天数）
 DDL_TIME = 30
 
 # 获取需要邮件提醒的用户
@@ -28,6 +28,12 @@ def get_recipients():
                 })
     return recipients
 
+def get_notice_time(userId):
+    all_data_filter = NoticeTimeForm.query.filter_by(userId=userId).all()
+    for data in all_data_filter:
+        pass
+
+
 # 获取需要提醒的云课堂任务
 def get_assign(userId):
     data = assign_list('', userId).get('assignList')
@@ -35,11 +41,11 @@ def get_assign(userId):
     assign_data = []
     now = time.time()
     for task in data:
+        # 任务未完成且当前时间距ddl短于DDL_TIME，则该任务需要提醒
         if not task.get('status') and \
                 0 < (task.get('endTime')/1000 - now) / (60*60*24) <= DDL_TIME:
-                # 当前时间距ddl时间少于DDL_TIME，则该任务需要提醒
-            t = task.get('endTime')
-            t /= 1000 if len(str(t))==13 else None
+            #t = task.get('endTime')
+            t = t / 1000 if len(str(t))==13 else task.get('endTime')
             endTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(t))
             assign_data.append({
                     'courseName': task.get('courseName'),
