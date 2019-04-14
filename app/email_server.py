@@ -11,10 +11,15 @@ from .models import User
 celery_app = Celery('email')
 celery_app.config_from_object(Celery_config)
 
+# 距ddl时间
+DDL_TIME = 30
+
+# 获取需要邮件提醒的用户
 def get_recipients():
     users = User.query.all()
     recipients = []
     for u in users:
+        # 是否邮箱不为空且开启邮件提醒功能
         if u.email and u.email_send:
             recipients.append({
                     'email': u.email,
@@ -23,7 +28,7 @@ def get_recipients():
                 })
     return recipients
 
-
+# 获取需要提醒的云课堂任务
 def get_assign(userId):
     data = assign_list('', userId).get('assignList')
     total = 0
@@ -31,7 +36,8 @@ def get_assign(userId):
     now = time.time()
     for task in data:
         if not task.get('status') and \
-                0 < (task.get('endTime')/1000 - now) / (60*60*24) <=5:
+                0 < (task.get('endTime')/1000 - now) / (60*60*24) <= DDL_TIME:
+                # 当前时间距ddl时间少于DDL_TIME，则该任务需要提醒
             t = task.get('endTime')
             t /= 1000 if len(str(t))==13 else None
             endTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(t))
@@ -46,6 +52,7 @@ def get_assign(userId):
             'assignList': assign_data,
             }
 
+# 异步发送邮件提醒
 @celery_app.task
 def send_mail_notice():
     recipients = get_recipients()
@@ -61,13 +68,15 @@ def send_mail_notice():
             msg.body = render_template('email_notice.txt', name=user.get('name'), data=assign_data)
             msg.html = render_template('email_notice.html', name=user.get('name'), data=assign_data)
             mail.send(msg)
-#            return "Best wish!"
+#           return "Best wish!"
         print('Sended to U!>_<')
 
 
+# 邮箱验证
 def email_verify(recipient, code):
     send_email_verify(recipient, code)
 
+# 异步发送邮箱验证码
 @celery_app.task
 def send_email_verify(recipient, code):
     with flask_app.app_context():
@@ -77,5 +86,3 @@ def send_email_verify(recipient, code):
         return 'OK'
     print("Send code to U!")
 
-
-#send_mail()
