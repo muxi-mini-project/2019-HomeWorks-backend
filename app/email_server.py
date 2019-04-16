@@ -75,9 +75,9 @@ def confirm_notice_time(userId, closest_time):
 
     notice_time_data = NoticeTimeForm.query.filter_by(userId=userId).all()
 
-    # 未设置时间节点默认情况下为1小时前提醒，前后偏差3分钟
+    # 未设置时间节点默认情况下为提前1天提醒，前后偏差3分钟
     if not notice_time_data:
-        if 0.95 <= time_interval <= 1.05:
+        if 24.95 <= time_interval <= 24.05:
             return True
         else:
             return False
