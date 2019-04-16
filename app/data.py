@@ -7,6 +7,7 @@ def assign_list(cookie, userId):
     session = requests.session()
     session.cookies.set("cookies", cookie)
 
+    # 先获取各课堂的站点Id
     header = {'cookie': cookie}
     payload = {
             'userId': userId,
@@ -19,8 +20,10 @@ def assign_list(cookie, userId):
     course_total = r.json().get('data').get('total')
     if course_total == 0:
         return False
-    total = 0
+    #total = 0
     assignList = []
+
+    # 根据课堂站点id获取各个课堂的任务
     for i in range(course_total):
         course_list = r.json().get('data').get('list')[i]
         siteId = course_list.get('siteId')
@@ -36,12 +39,12 @@ def assign_list(cookie, userId):
         assign_total = rp.json().get('data').get('total')
         if not assign_total:
             continue
-        total = total + assign_total
+        #total += assign_total
         courseName = course_list.get('courseName')
         teacher = course_list.get('teacherName')
 
-        for j in range(assign_total):
-            assignment = rp.json()['data'].get('list')[j]
+        assignments = rp.json()['data'].get('list')
+        for assignment in assignments:
             assignName = assignment.get('title')
             assignId = assignment.get('id')
             status = assignment.get('status')
@@ -59,11 +62,11 @@ def assign_list(cookie, userId):
                     }
             assignList.append(assign_data)
         
-        return {
-                'assignList': assignList,
-                'total': total,
-                'cookie': session.cookies.get_dict().get('cookies'),
-                }
+    return {
+            'assignList': assignList,
+            'total': len(assignList),
+            'cookie': session.cookies.get_dict().get('cookies'),
+            }
 
 '''
 def course_list(cookie, userId):

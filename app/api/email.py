@@ -5,7 +5,7 @@ from ..models import User
 from .. import db
 from ..email_server import email_verify
 
-
+# 修改邮箱
 @app.route('/mail/modify/', methods=['PUT'])
 def mail_modify():
     token = request.headers.get('token')
@@ -43,6 +43,7 @@ def mail_modify():
 
     return jsonify({'msg': 'success'}), 200
 
+# 发送邮箱验证码
 @app.route('/mail/modify/sendVerifyCode/', methods=['POST'])
 def mail_verify():
     token = request.headers.get('token')
@@ -80,6 +81,7 @@ def mail_verify():
             'verifyCodeToken': get_token.get('token'),
             'msg': '已发送验证码'}), 200
 
+# 邮件提醒启用状态更改
 @app.route("mail/isSend/modify/", methods=['PUT'])
 def is_send_modify():
     token = request.headers.get('token')

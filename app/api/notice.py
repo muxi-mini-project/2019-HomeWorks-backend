@@ -1,4 +1,4 @@
-import requests
+import requests, time
 from flask import jsonify, request
 from . import app
 from ..models import User
@@ -24,7 +24,8 @@ def notice():
     total = 0
     data = []
     for task in assignList:
-        if task.get('status') == 0:
+        # 未完成且未过期，则加入列表
+        if task.get('status') == 0 and task.get('endTime')/1000 >= time.time():
             data.append(task)
             total += 1
 

@@ -18,7 +18,7 @@ DDL_TIME = 30
 def get_recipients():
     users = User.query.all()
     recipients = []
-        for u in users:
+    for u in users:
         # 是否邮箱不为空且开启邮件提醒功能
         if u.email and u.email_send:
             recipients.append({
@@ -33,12 +33,13 @@ def get_assign(userId):
     data = assign_list('', userId).get('assignList')
     total = 0
     assign_data = []
-    # 当前时间，17位的浮点型数值
-    now = time.time()
-    # 距现在最近的任务的时间，初始为最大的13位数
+    # 当前时间，17位的浮点型数值，转换为10位整数，单位为秒
+    now = int(time.time())
+    # 距现在最近的任务的时间，初始为最大的13位整数
     closest_time = 9999999999999
 
     for task in data:
+        # 13位整数
         endTime = task.get('endTime')
         # 任务未完成且当前时间距ddl短于DDL_TIME，则该任务需要提醒
         if not task.get('status') and \
@@ -49,7 +50,7 @@ def get_assign(userId):
 
             # 将时间戳转化为字符串形式的时间
             #t = task.get('endTime')
-            t = t / 1000 if len(str(t))==13 else endTime
+            t = endTime / 1000 if len(str(endTime))==13 else endTime
             end_time_string = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(t))
             assign_data.append({
                     'courseName': task.get('courseName'),
@@ -66,13 +67,14 @@ def get_assign(userId):
 
 # 与设置的时间节点是否吻合
 def confirm_notice_time(userId, closest_time):
-    #now = time.time()
-    # 间隔的小时
-    time = (closest_time - time.time()) / 3600
+    # 当前时间，17位浮点数，转换为10位整数，单位为秒
+    now = int(time.time())
+    # 当前时间与最近的任务ddl间隔的小时
+    time_interval = (closest_time /1000 - now) / 3600
     notice_time_data = NoticeTimeForm.query.filter_by(userId=userId).all()
 
     # 未设置时间节点默认情况下为1小时，前后偏差6分钟
-    if not notice_time_data and 0.9 <= time <= 1.1:
+    if not notice_time_data and 0.9 <= time_interval <= 1.1:
         return True
     else:
         return False
@@ -80,7 +82,7 @@ def confirm_notice_time(userId, closest_time):
     # 查找符合的时间节点
     for data in notice_time_data:
         # 前后偏差6分钟
-        if data.notice_time - 0.1 <= time <= data.notice_time + 0.1:
+        if data.notice_time - 0.1 <= time_interval <= data.notice_time + 0.1:
             return True
     return False
 
@@ -90,9 +92,9 @@ def send_mail_notice():
     recipients = get_recipients()
     for user in recipients:
         assign_data = get_assign(user.get('userId'))
-        print(user.get('name') + str(assign_data.get('total')))
+        print(user.get('name') +' '+ str(assign_data.get('total'))+ '项任务')
         if not assign_data.get('total') or \
-            not confirm_notice_time(user.get('userId'), user.get('closest_time')):
+            not confirm_notice_time(user.get('userId'), assign_data.get('closest_time')):
             continue
 
         with flask_app.app_context():

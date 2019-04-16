@@ -57,8 +57,8 @@ def add_notice_time():
         }), 200
 
 
-# 获取全部提醒时间节点
-@app.route('/mail/noticeTime/get/', methods=['GET'])
+# 获取全部提醒时间节点及邮箱提醒设置
+@app.route('/mail/noticeTimeAndIsSend/get/', methods=['GET'])
 def get_notice_time():
     token = request.headers.get('token')
     if not token:
@@ -71,7 +71,7 @@ def get_notice_time():
         return jsonify({
                 'msg': 'Invalid token'}), 401
 
-    # 从数据库中获取数据
+    # 从数据库中获取时间节点数据
     time_get_data = NoticeTimeForm.query.filter_by(userId=userId).all()
     notice_time_list = []
     for data in time_get_data:
@@ -82,8 +82,12 @@ def get_notice_time():
             }
         notice_time_list.append(time_data)
 
+    # 从数据库中获取邮件提醒服务是否开启设置
+    isSend = User.query.filter_by(userId=userId).first().email_send
+
     return jsonify({
             'msg': 'success',
+            'isSend': isSend,
             'noticeTimeList': notice_time_list,
             'total': len(time_get_data),
         }), 200

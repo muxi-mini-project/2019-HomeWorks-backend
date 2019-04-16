@@ -34,8 +34,8 @@ class Celery_config(object):
     CELERYBEAT_SCHEDULE = {
         'add-every-7': {
             'task': 'app.email_server.send_mail_notice',
-            'schedule': crontab(hour=7, minute=30),
-#            'schedule': timedelta(seconds=30)
+#            'schedule': crontab(hour=7, minute=30),
+            'schedule': timedelta(hours=1)
         }
     }   
 
