@@ -36,6 +36,6 @@ class Celery_config(object):
             'task': 'app.email_server.send_mail_notice',
 #            'schedule': crontab(hour=7, minute=30),
 #            'schedule': timedelta(hours=1)
-            'schedule': crontab(minute=58, hour='*/1'),
+            'schedule': crontab(minute=57, hour='*/1'),
         }
     }

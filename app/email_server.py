@@ -71,18 +71,21 @@ def confirm_notice_time(userId, closest_time):
     now = int(time.time())
     # 当前时间与最近的任务ddl间隔的小时
     time_interval = (closest_time /1000 - now) / 3600
+    print('closest:{} now:{} interval:{}'.format(closest_time, now, time_interval))
+
     notice_time_data = NoticeTimeForm.query.filter_by(userId=userId).all()
 
-    # 未设置时间节点默认情况下为1小时，前后偏差6分钟
-    if not notice_time_data and 0.9 <= time_interval <= 1.1:
-        return True
-    else:
-        return False
+    # 未设置时间节点默认情况下为1小时前提醒，前后偏差3分钟
+    if not notice_time_data:
+        if 0.95 <= time_interval <= 1.05:
+            return True
+        else:
+            return False
 
     # 查找符合的时间节点
     for data in notice_time_data:
-        # 前后偏差6分钟
-        if data.notice_time - 0.1 <= time_interval <= data.notice_time + 0.1:
+        # 前后偏差3分钟
+        if data.notice_time - 0.05 <= time_interval <= data.notice_time + 0.05:
             return True
     return False
 
@@ -92,7 +95,7 @@ def send_mail_notice():
     recipients = get_recipients()
     for user in recipients:
         assign_data = get_assign(user.get('userId'))
-        print(user.get('name')+ str(assign_data.get('total')))
+#        print(user.get('name')+ str(assign_data.get('total')))
         if not assign_data.get('total') or \
             not confirm_notice_time(user.get('userId'), assign_data.get('closest_time')):
             continue
@@ -103,7 +106,6 @@ def send_mail_notice():
             msg.body = render_template('email_notice.txt', name=user.get('name'), data=assign_data)
             msg.html = render_template('email_notice.html', name=user.get('name'), data=assign_data)
             mail.send(msg)
-#           return "Best wish!"
         print('Sended to U!>_<')
 
 
@@ -119,4 +121,5 @@ def send_email_verify(recipient, code):
         msg.body = render_template('email_verify.txt', code=code)
         mail.send(msg)
         return 'OK'
-    print("Send code to U!")
+    print("Sended code to U!")
+
