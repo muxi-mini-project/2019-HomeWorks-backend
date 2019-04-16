@@ -58,7 +58,7 @@ def add_notice_time():
 
 
 # 获取全部提醒时间节点及邮箱提醒设置
-@app.route('/mail/noticeTimeAndIsSend/get/', methods=['GET'])
+@app.route('/mail/noticeConfig/get/', methods=['GET'])
 def get_notice_time():
     token = request.headers.get('token')
     if not token:
@@ -117,7 +117,8 @@ def modify_notice_time(notice_time_id):
     new_notice_time = post_data.get('noticeTime')
 
     # 时间节点是否存在
-    time_data = NoticeTimeForm.query.filter_by(userId=userId, notice_time_id=notice_time_id)
+    time_data = NoticeTimeForm.query.filter_by(
+            userId=userId, notice_time_id=notice_time_id).first()
     if not time_data:
         return jsonify({
             'msg': '该时间节点不存在',
@@ -188,7 +189,8 @@ def change_notice_time_status(notice_time_id):
         }), 401
 
     # 时间节点是否存在
-    time_data = NoticeTimeForm.query.filter_by(userId=userId, notice_time_id=notice_time_id).first()
+    time_data = NoticeTimeForm.query.filter_by(
+            userId=userId, notice_time_id=notice_time_id).first()
     if not time_data:
         return jsonify({
             'msg': '该时间节点不存在',

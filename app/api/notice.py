@@ -4,7 +4,8 @@ from . import app
 from ..models import User
 from ..data import assign_list
 
-@app.route('/notice/', methods=['GET'])
+# 弹窗提醒&获取未提交任务
+@app.route('/notice/getAssignments/', methods=['GET'])
 def notice():
     cookie = request.headers.get('cookie')
     token = request.headers.get('token')
