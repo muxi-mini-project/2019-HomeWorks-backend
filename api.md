@@ -346,7 +346,7 @@ None
 ## 邮件提醒启用状态更改
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/mail/isSend/modify/ |POST  |  token  |
+|/api/mail/isSend/modify/ |PUT  |  token  |
 ### Post Data
 None
 
@@ -456,6 +456,7 @@ None
 ```
 {
     "msg": String,
+    "statusMessage": String,
 }
 ```
 ### Status Code
@@ -479,7 +480,6 @@ None
 ```
 {
     "msg": String,
-    "statusMessage": String
 }
 ```
 ### Status Code

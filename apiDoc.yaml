@@ -28,7 +28,7 @@ paths:
     post:
       tags:
         - user
-      summary: login
+      summary: 登录
       description: login for account
       consumes:
         - application/json
@@ -495,11 +495,11 @@ paths:
               msg:
                 type: string
                 
-  /notice/:
+  /notice/getAssignments/:
     get:
       tags:
         - notice
-      summary: 未提交任务提醒
+      summary: 弹窗提醒&获取未提交任务
       description: notice the unsubmit assignments
       parameters:
         - name: cookie
@@ -747,7 +747,7 @@ paths:
     put:
       tags:
         - mail
-      summary: 邮件提醒是否使用修改
+      summary: 邮件提醒启用状态更改
       parameters:
         - name: token
           in: header
@@ -784,3 +784,256 @@ paths:
             properties:
               msg:
                 type: string
+
+  /mail/noticeTime/add/:
+    post:
+      tags:
+        - mail
+      summary: 添加时间节点
+      parameters:
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: data
+          in: body
+          schema:
+            required:
+              - noticeTime
+            properties:
+              noticeTime:
+                type: integer
+      responses:
+        200:
+          description: added successfully
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+              noticeTimeId:
+                type: string
+        400:
+          description: 请求错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        404:
+          description: 用户不存在
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+
+  /mail/noticeConfig/get/:
+    get:
+      tags:
+        - mail
+      summary: 获取全部时间节点及邮箱通知设置
+      parameters:
+        - name: token
+          in: header
+          required: true
+          type: string        
+      responses:
+        200:
+          description: success
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+              isSend:
+                type: boolean
+              total:
+                type: integer
+              noticeTimeList:
+                type: array
+                items:
+                  properties:
+                    noticeTime:
+                      type: integer
+                    noticeTimeId:
+                      type: string
+                    noticeTimeStatus:
+                      type: integer
+        400:
+          description: 请求错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        404:
+          description: 未找到
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+                
+  /mail/noticeTime/{noticeTimeId}/modify/:
+    put:
+      tags:
+        - mail
+      summary: 修改时间节点
+      parameters:
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: noticeTimeId
+          in: path
+          required: true
+          type: string
+        - name: data
+          in: body
+          schema:
+            required:
+              - noticeTime
+            properties:
+              noticeTime:
+                type: integer
+      responses:
+        200:
+          description: success
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+              noticeTimeId:
+                type: string
+        400:
+          description: 请求错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        404:
+          description: 未找到
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+
+  /mail/noticeTime/{noticeTimeId}/changeStatus/:
+    put:
+      tags:
+        - mail
+      summary: 改变时间节点启用状态
+      parameters:
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: noticeTimeId
+          in: path
+          required: true
+          type: string          
+      responses:
+        200:
+          description: success
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+              statusMessage:
+                type: string
+
+        400:
+          description: 请求错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        404:
+          description: 未找到
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+
+  /mail/noticeTime/delete/:
+    delete:
+      tags:
+        - mail
+      summary: 移除时间节点
+      parameters:
+        - name: token
+          in: header
+          required: true
+          type: string
+        - name: data
+          in: body
+          schema:
+            required:
+              - noticeTimeId
+            properties:
+              noticeTimeId:
+                type: string
+      responses:
+        200:
+          description: success
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        400:
+          description: 请求错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        401:
+          description: 身份认证错误
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string
+        404:
+          description: 未找到
+          schema:
+            type: object
+            properties:
+              msg:
+                type: string   
