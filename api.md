@@ -211,10 +211,10 @@ None
 401 身份认证错误
 ```
 
-## 未提交任务提醒
+## 弹窗提醒&获取未提交任务
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/notice/ | GET  |  cookie, token  |
+|/api/notice/getAssignments/ | GET  |  cookie, token  |
 
 ### Post Data
 None
@@ -391,10 +391,10 @@ None
 404 用户不存在
 ```
 
-## 获取全部时间节点
+## 获取全部时间节点及邮箱通知设置
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/mail/noticeTime/get/ |GET  |  token  |
+|/api/mail/noticeConfig/get/ |GET  |  token  |
 ### Post Data
 None
 
@@ -402,6 +402,7 @@ None
 ```
 {
     "msg": String,
+    "isSend": Boolean,              //true为开启
     "noticeTimeList": [{
         "noticeTime": Int,
         "noticeTimeId": String,
@@ -422,7 +423,7 @@ None
 ## 修改时间节点
 |URL        |Method|header|
 |:--:       |:--:  |:--:  |
-|/api/mail/noticeTime/{noticeTimeId: String}/modify | PUT  | token  |
+|/api/mail/noticeTime/{noticeTimeId: String}/modify/ | PUT  | token  |
 ### Post Data
 ```
 {
@@ -471,14 +472,14 @@ None
 ### Post Data
 ```
 {
-    "noticeTimeId": 
+    "noticeTimeId": String
 }
 ```
 ### Return Data
 ```
 {
     "msg": String,
-    "statusMessage": String,
+    "statusMessage": String
 }
 ```
 ### Status Code
