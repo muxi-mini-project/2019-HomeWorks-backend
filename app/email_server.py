@@ -71,7 +71,7 @@ def confirm_notice_time(userId, closest_time):
     now = int(time.time())
     # 当前时间与最近的任务ddl间隔的小时
     time_interval = (closest_time /1000 - now) / 3600
-    print('closest:{} now:{} interval:{}'.format(closest_time, now, time_interval))
+#    print('closest:{} now:{} interval:{}'.format(closest_time, now, time_interval))
 
     notice_time_data = NoticeTimeForm.query.filter_by(userId=userId).all()
 
@@ -95,13 +95,13 @@ def send_mail_notice():
     recipients = get_recipients()
     for user in recipients:
         assign_data = get_assign(user.get('userId'))
-#        print(user.get('name')+ str(assign_data.get('total')))
+        print(user.get('name')+ str(assign_data.get('total')))
         if not assign_data.get('total') or \
             not confirm_notice_time(user.get('userId'), assign_data.get('closest_time')):
             continue
 
         with flask_app.app_context():
-            msg = Message("云课堂作业提醒!",
+            msg = Message("云课堂作业提醒",
                     recipients = [user.get('email')])
             msg.body = render_template('email_notice.txt', name=user.get('name'), data=assign_data)
             msg.html = render_template('email_notice.html', name=user.get('name'), data=assign_data)
