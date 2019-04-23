@@ -11,12 +11,12 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 #    DEBUG = True,
-    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_SERVER = 'smtp.qq.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = 'Homeworks <shdwzhang@gmail.com>'
+    MAIL_DEFAULT_SENDER = 'Homeworks <654957943@qq.com>'
 
 class Celery_config(object):
     # Broker and Backend

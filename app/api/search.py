@@ -2,8 +2,10 @@ import requests
 from flask import jsonify, request
 from . import app
 from ..models import User
+from ..verify import token_required
 
 @app.route('/search/', methods=['GET'])
+@token_required
 def search():
     cookie = request.headers.get('cookie')
     token = request.headers.get('token')
@@ -11,16 +13,11 @@ def search():
     if not cookie:
         return jsonify({
                 'msg': 'No cookie'}), 400 
-    if not token:
-        return jsonify({
-                'msg': "No token"}), 400 
+
     if not keyword:
         return jsonify({
                 'msg': 'No keyword'}), 400 
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-                'msg': 'Invalid token'}), 401 
 
     session = requests.session()
     session.cookies.set('cookies', cookie)

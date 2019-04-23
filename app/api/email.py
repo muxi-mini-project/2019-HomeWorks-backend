@@ -4,14 +4,12 @@ from . import app
 from ..models import User
 from .. import db
 from ..email_server import email_verify
+from ..verify import token_required
 
 # 修改邮箱
 @app.route('/mail/modify/', methods=['PUT'])
+@token_required
 def mail_modify():
-    token = request.headers.get('token')
-    if not token:
-        return jsonify({
-            'msg': 'No token'}), 400
     verify_code_token = request.headers.get('verifyCodeToken')
     if not verify_code_token:
         return jsonify({
@@ -29,10 +27,8 @@ def mail_modify():
     if not re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net]{1,3}$', email):
         return jsonify({'msg': 'Invalid email'}), 400
 
+    token = request.headers.get('token')
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-                'msg': 'Invalid token'}), 401
 
     if not User.verify_email(email, verify_code, verify_code_token):
         return jsonify({
@@ -45,11 +41,8 @@ def mail_modify():
 
 # 发送邮箱验证码
 @app.route('/mail/modify/sendVerifyCode/', methods=['POST'])
+@token_required
 def mail_verify():
-    token = request.headers.get('token')
-    if not token:
-        return jsonify({
-            'msg': 'No token'}), 400
     email = request.get_json().get('email')
     if not email:
         return jsonify({
@@ -59,15 +52,13 @@ def mail_verify():
     if not re.match(r'^[0-9a-zA-Z_]{0,19}@[0-9a-zA-Z]{1,13}\.[com,cn,net]{1,3}$', email):
         return jsonify({'msg': 'Invalid email'}), 400
 
-    #验证此邮箱是否已经存在
-    if User.query.filter_by(email=email).first():
+    # 验证此邮箱是否已经存在，并且不可用发送邮件的服务器邮箱
+    if User.query.filter_by(email=email).first() or email == '654957943@qq.com':
         return jsonify({
                 'msg': 'Email has already existed'}), 400
 
+    token = request.headers.get('token')
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-                'msg': 'Invalid token'}), 401
 
     u = User.query.filter_by(userId=userId).first()
     if not u:
@@ -83,16 +74,10 @@ def mail_verify():
 
 # 邮件提醒启用状态更改
 @app.route("mail/isSend/modify/", methods=['PUT'])
+@token_required
 def is_send_modify():
     token = request.headers.get('token')
-    if not token:
-        return jsonify({
-            'msg': 'No token'}), 400
-
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-                'msg': 'Invalid token'}), 401
     
     u = User.query.filter_by(userId=userId).first()
     if not u:

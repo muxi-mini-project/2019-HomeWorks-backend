@@ -3,16 +3,12 @@ from . import app
 from ..models import User, NoticeTimeForm
 from .. import db
 from ..models import generate_notice_time_id
+from ..verify import token_required
 
 # 添加提醒时间节点
 @app.route('/mail/noticeTime/add/', methods=["POST"])
+@token_required
 def add_notice_time():
-    token = request.headers.get('token')
-    if not token:
-        return jsonify({
-            'msg': 'No token'
-        }), 400
-
     # 是否有请求数据
     post_data = request.get_json()
     if not post_data or not post_data.get('noticeTime'):
@@ -21,11 +17,8 @@ def add_notice_time():
         }), 400
     notice_time_value = post_data.get('noticeTime')
 
+    token = request.headers.get('token')
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-            'msg': 'Invalid token'
-        }), 401
     
     user = User.query.filter_by(userId=userId).first()
     if not user:
@@ -59,17 +52,10 @@ def add_notice_time():
 
 # 获取全部提醒时间节点及邮箱提醒设置
 @app.route('/mail/noticeConfig/get/', methods=['GET'])
+@token_required
 def get_notice_time():
     token = request.headers.get('token')
-    if not token:
-        return jsonify({
-            'msg': 'No token'
-        }), 400
-
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-                'msg': 'Invalid token'}), 401
 
     # 从数据库中获取时间节点数据
     time_get_data = NoticeTimeForm.query.filter_by(userId=userId).all()
@@ -95,19 +81,8 @@ def get_notice_time():
 
 # 修改时间节点
 @app.route('/mail/noticeTime/<notice_time_id>/modify/', methods=['PUT'])
+@token_required
 def modify_notice_time(notice_time_id):
-    token = request.headers.get('token')
-    if not token:
-        return jsonify({
-            'msg': 'No token'
-        }), 400
-
-    userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-            'msg': 'Invalid token'
-        }), 401
-
     # 是否有请求数据
     post_data = request.get_json()
     if not post_data or not post_data.get('noticeTime'):
@@ -115,6 +90,9 @@ def modify_notice_time(notice_time_id):
             'msg': 'No new noticeTime'
         }), 400
     new_notice_time = post_data.get('noticeTime')
+
+    token = request.headers.get('token')
+    userId = User.get_userId_token(token)
 
     # 时间节点是否存在
     time_data = NoticeTimeForm.query.filter_by(
@@ -135,19 +113,8 @@ def modify_notice_time(notice_time_id):
 
 # 移除时间节点
 @app.route('/mail/noticeTime/delete/', methods=['DELETE'])
+@token_required
 def delete_notice_time():
-    token = request.headers.get('token')
-    if not token:
-        return jsonify({
-            'msg': 'No token'
-        }), 400
-
-    userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-            'msg': 'Invalid token'
-        }), 401
-
     # 是否有请求数据
     post_data = request.get_json()
     if not post_data or not post_data.get('noticeTimeId'):
@@ -155,6 +122,9 @@ def delete_notice_time():
             'msg': 'No noticeTimeId'
         }), 400
     notice_time_id = post_data.get('noticeTimeId')
+
+    token = request.headers.get('token')
+    userId = User.get_userId_token(token)
 
     # 时间节点是否存在
     time_data = NoticeTimeForm.query.filter_by(
@@ -175,19 +145,11 @@ def delete_notice_time():
 
 # 改变时间节点启用状态
 @app.route('/mail/noticeTime/<notice_time_id>/changeStatus/', methods=['PUT'])
+@token_required
 def change_notice_time_status(notice_time_id):
     token = request.headers.get('token')
-    if not token:
-        return jsonify({
-            'msg': 'No token'
-        }), 400
-
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-            'msg': 'Invalid token'
-        }), 401
-
+ 
     # 时间节点是否存在
     time_data = NoticeTimeForm.query.filter_by(
             userId=userId, notice_time_id=notice_time_id).first()

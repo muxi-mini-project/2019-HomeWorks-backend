@@ -1,29 +1,21 @@
 import requests
 from flask import jsonify, request
 from . import app
-from ..verify import verify_siteId
+from ..verify import verify_siteId, token_required
 from ..models import User
 
 @app.route('/course/list/', methods = ['GET'])
+@token_required
 def courseList():
     cookie = request.headers.get('cookie')
-#    userId = request.get_json().get('userId')
     token = request.headers.get('token')
-#    if cookie is None:
+
     if not cookie:
         return jsonify({
                 "msg": "No cookie"
                 }), 400
-    if not token:
-        return jsonify({
-                'msg': 'No token'
-                }), 400
 
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-                'msg': 'Invalid token'
-                }), 401
 
     header = {'cookie': cookie}
     payload = {
@@ -59,6 +51,7 @@ def courseList():
 
 
 @app.route('/course/<siteId>/assignment/list/', methods=['GET'])
+@token_required
 def oneClassAssign(siteId):
     cookie = request.headers.get('cookie')
     if not cookie:
@@ -66,14 +59,7 @@ def oneClassAssign(siteId):
             'msg': 'No cookie'}), 400
 
     token = request.headers.get('token')
-    if not token:
-        return jsonify({
-            'msg': 'No token'}), 400
-
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-            'msg': 'Invalid token'}), 401
 
     if not verify_siteId(siteId, userId):
         return jsonify({

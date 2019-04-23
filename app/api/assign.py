@@ -2,22 +2,19 @@ from . import app
 import requests
 from flask import jsonify, request
 from ..models import User
-from ..verify import verify_siteId
+from ..verify import verify_siteId, token_required
 from ..data import assign_list
 from ..filter_html import filter_tags
 
 @app.route('/assignment/list/', methods=['GET'])
+@token_required
 def assignList():
     cookie = request.headers.get('cookie')
-    token = request.headers.get('token')
     if not cookie:
         return jsonify({'msg': 'No cookie'}), 400
-    if not token:
-        return jsonify({'msg': 'No token'}), 400
 
+    token = request.headers.get('token')
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({'msg': 'Invalid token'}), 401
 
     data = assign_list(cookie, userId)
     if not data:
@@ -34,22 +31,16 @@ def assignList():
 
 
 @app.route('/assignment/<siteId>/<assignId>/info/', methods=['GET'])
+@token_required
 def assignInfo(siteId, assignId):
     cookie = request.headers.get('cookie')
-    token = request.headers.get('token')
     if not cookie:
         return jsonify({
                 'msg': 'No cookie'
             }), 400
-    if not token:
-        return jsonify({
-                'msg': 'No token'
-            }), 400
+
+    token = request.headers.get('token')
     userId = User.get_userId_token(token)
-    if not userId:
-        return jsonify({
-                'msg': 'Invalid token'
-            }), 401
 
     if not verify_siteId(siteId, userId):
         return jsonify({

@@ -75,7 +75,7 @@ class NoticeTimeForm(db.Model):
     def __repr__(self):
         return '<NoticeTime {} {}>'.format(self.notice_time, self.userId)
 
-
+# 用当前时间戳和用户名生成notice_time_id
 def generate_notice_time_id(userName):
     now = int(time.time())
     notice_time_id = str(now) + userName
