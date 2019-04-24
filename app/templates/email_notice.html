@@ -1,8 +1,17 @@
 <p>亲爱的{{ name }},</p>
-<p>你目前有{{ data.get('total') }}项云课堂作业即将截止，作业如下:</p>
-{% for task in data.get('assignList') %}
-<ul>
-	{{ task.get('courseName')}}    {{task.get('assignName') }}<br>
-	截止时间：{{ task.get('endTime') }}
-</ul>
-{% endfor %}
+<p>您目前有 {{ data.get('total') }} 项云课堂作业即将截止，作业如下:</p>
+<table border="1">
+    <tr>
+        <td>课堂名</td>
+        <td>作业名</td>
+        <td>截止时间</td>
+    </tr>
+    {% for task in data.get('assignList') %}
+    <tr>
+        <td>{{ task.get('courseName')}}</td>
+        <td>{{task.get('assignName') }}</td>
+        <td>{{ task.get('endTime') }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
