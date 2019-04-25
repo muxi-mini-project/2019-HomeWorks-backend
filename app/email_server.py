@@ -107,6 +107,7 @@ def send_mail_notice():
             msg.html = render_template('email_notice.html', name=user.get('name'), data=assign_data)
             mail.send(msg)
         print('Sended to U!>_<')
+        time.sleep(0.5)
 
 
 # 邮箱验证
