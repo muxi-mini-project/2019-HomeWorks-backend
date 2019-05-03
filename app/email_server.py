@@ -95,7 +95,7 @@ def send_mail_notice():
     recipients = get_recipients()
     for user in recipients:
         assign_data = get_assign(user.get('userId'))
-        print(user.get('name')+ str(assign_data.get('total')))
+#        print(user.get('name')+ str(assign_data.get('total')))
         if not assign_data.get('total') or \
             not confirm_notice_time(user.get('userId'), assign_data.get('closest_time')):
             continue
@@ -106,8 +106,10 @@ def send_mail_notice():
             msg.body = render_template('email_notice.txt', name=user.get('name'), data=assign_data)
             msg.html = render_template('email_notice.html', name=user.get('name'), data=assign_data)
             mail.send(msg)
+
+        print(user.get('name')+ str(assign_data.get('total')))
         print('Sended to U!>_<')
-        time.sleep(0.5)
+        time.sleep(1)
 
 
 # 邮箱验证
