@@ -1,3 +1,5 @@
+# 此文件目前无用
+
 from app import app
 
 if __name__ == '__main__':

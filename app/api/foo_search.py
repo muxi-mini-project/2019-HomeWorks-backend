@@ -1,3 +1,5 @@
+# 放弃的搜索版本
+
 from flask import jsonify, request
 from . import app
 from ..models import User

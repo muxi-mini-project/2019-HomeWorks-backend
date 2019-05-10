@@ -37,13 +37,6 @@ class User(db.Model):
     def generate_email_token(self, email):
         code = randint(1000, 9999)  #生成(1000,9999]的四位验证码
         s = Serializer(app.config['SECRET_KEY'], expires_in=600)    #有效时间：10分钟
-        """
-        return s.dumps({
-                    'id': self.id,
-                    'email': email,
-                    'code': code
-                }).decode('utf-8')
-        """
         token = s.dumps({
                     'id': self.id,
                     'email': email,
