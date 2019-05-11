@@ -6,9 +6,10 @@ from ..verify import verify_siteId, token_required
 from ..data import assign_list
 from ..filter_html import filter_tags
 
+
 @app.route('/assignment/list/', methods=['GET'])
 @token_required
-def assignList():
+def get_assign_list():
     cookie = request.headers.get('cookie')
     if not cookie:
         return jsonify({'msg': 'No cookie'}), 400
@@ -32,7 +33,7 @@ def assignList():
 
 @app.route('/assignment/<siteId>/<assignId>/info/', methods=['GET'])
 @token_required
-def assignInfo(siteId, assignId):
+def get_assign_information(siteId, assignId):
     cookie = request.headers.get('cookie')
     if not cookie:
         return jsonify({
@@ -67,10 +68,10 @@ def assignInfo(siteId, assignId):
             'pageNum': 1,
             'pageSize': 50,
             }
-    assign_list = session.post(url, json=payload, headers=header).json()\
+    assignment_list = session.post(url, json=payload, headers=header).json()\
             .get('data').get('list')
     check_assignId = False
-    for data in assign_list:
+    for data in assignment_list:
         if assignId != data.get('id'):
             continue
         personalPoint = data.get('personalPoint')
@@ -79,6 +80,7 @@ def assignInfo(siteId, assignId):
         groupNum = data.get('groupNum')
         pointNum = data.get('pointNum')
         commitNum = data.get('commitNum')
+        status = data.get("status")
 
         check_assignId = True
         break
@@ -118,25 +120,25 @@ def assignInfo(siteId, assignId):
             "assignId": assignId,
             "courseName": courseName,
             "assignName": cer_info.get('title'),
-            "status": int(cer_info.get('status')),
+            "status": int(status),
             "beginTime": cer_info.get('begintime'),
             "endTime": cer_info.get('endtime'),
             "content": filter_tags(cer_info.get('content')),
-            #作业要求，颁布的作业
-            "pointNum": pointNum,                               #已批阅数
+            # 作业要求，颁布的作业
+            "pointNum": pointNum,                               # 已批阅数
             "commitNum": commitNum,
-            "isGroup": int(cer_info.get('isgroup')),            #是否分组
+            "isGroup": int(cer_info.get('isgroup')),            # 是否分组
             "groupNum": cer_info.get('groupNum'),
             "studentNum": studentNum,
             "groupPoint": groupPoint,
             "personalPoint": personalPoint,
-            "feedback": cer_info.get('assignmentSubmit')[0].get('feedback'),    #反馈
-            "assignAttachmentNum": cer_info.get('assignmentAttachmentNum'),     #作业要求的附件数
+            "feedback": cer_info.get('assignmentSubmit')[0].get('feedback'),    # 反馈
+            "assignAttachmentNum": cer_info.get('assignmentAttachmentNum'),     # 作业要求的附件数
             "assignAttachment": assignAttachment,
-            "submitAttachmentNum": cer_info.get('assignmentSubmitNum'),         #提交的附件数
+            "submitAttachmentNum": cer_info.get('assignmentSubmitNum'),         # 提交的附件数
             "submitAttachment": submitAttachment,
             "submitContent": cer_info.get('assignmentSubmit')[0].get('content'),
-            #作业内容，提交的作业
+            # 作业内容，提交的作业
         }
 
     return jsonify(return_data), 200
