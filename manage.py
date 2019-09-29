@@ -1,4 +1,4 @@
-# 此文件目前无用
+#!/usr/bin/python3
 
 from app import app
 

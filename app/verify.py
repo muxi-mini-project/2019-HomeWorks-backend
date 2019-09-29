@@ -3,12 +3,12 @@ from flask import session, jsonify, request
 from functools import wraps
 from .models import User
 
-#课堂站点验证
+# 课堂站点验证
 def verify_siteId(siteId, userId):
     url = 'http://spoc.ccnu.edu.cn/studentHomepage/getMySite'
     payload = {
             'userId': userId,
-            'termCode': '201901',
+            'termCode': '201902',
             'pageNum': 1,
             'pageSize': 30,
             }
@@ -21,7 +21,7 @@ def verify_siteId(siteId, userId):
             return True
     return False
 
-#token验证
+# token验证
 def token_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -30,12 +30,11 @@ def token_required(func):
             return jsonify({
                 'msg': 'No token'
             }), 400
-            
+
         userId = User.get_userId_token(token)
         if not userId:
             return jsonify({
-                'msg': 'Invalid token'}), 401 
+                'msg': 'Invalid token'}), 401
         return func(*args, **kwargs)
 
     return wrapper
-        

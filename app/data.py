@@ -1,7 +1,9 @@
-from . import app
-from flask import request
 import requests
+from flask import request
+
+from . import app
 from .models import User
+
 
 def assign_list(cookie, userId):
     session = requests.session()
@@ -11,7 +13,7 @@ def assign_list(cookie, userId):
     header = {'cookie': cookie}
     payload = {
             'userId': userId,
-            'termCode': '201901',
+            'termCode': '201902',
             'pageNum': 1,
             'pageSize': 30,
             }
@@ -61,7 +63,7 @@ def assign_list(cookie, userId):
                     'teacher': teacher,
                     }
             assignList.append(assign_data)
-        
+
     return {
             'assignList': assignList,
             'total': len(assignList),

@@ -1,8 +1,10 @@
 import requests
 from flask import jsonify, request
-from . import app
-from ..verify import verify_siteId, token_required
+
 from ..models import User
+from ..verify import token_required, verify_siteId
+from . import app
+
 
 @app.route('/course/list/', methods = ['GET'])
 @token_required
@@ -20,7 +22,7 @@ def courseList():
     header = {'cookie': cookie}
     payload = {
             'userId': userId,
-            'termCode': '201901',
+            'termCode': '201902',
             'pageNum': 1,
             'pageSize': 30,
             }
@@ -97,6 +99,5 @@ def oneClassAssign(siteId):
             'siteId': siteId,
             'total': total,
             'data': data,
-            }
+    }
     return jsonify(js_data), 200
-

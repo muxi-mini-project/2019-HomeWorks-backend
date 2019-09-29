@@ -1,8 +1,9 @@
 import requests
 from flask import jsonify, request
-from . import app
+
 from .. import db
 from ..models import User
+from . import app
 
 
 @app.route('/login/', methods = ['POST'])
@@ -27,13 +28,13 @@ def login():
         return jsonify({
                 'msg': 'login failed',
                 }), 401
-    
+
     url =  "http://spoc.ccnu.edu.cn/userInfo/getUserInfo"
     info = session.post(url).json()['data']['userInfoVO']
     userId = info.get('id')
     realName = info.get('userInfo').get('realname')
     cookie = 'SESSION' + '=' + session.cookies.get_dict()['SESSION']
-    
+
     u = User.query.filter_by(userName=userName).first()
     if not u:
         u = User(userName=userName, name=realName, userId=userId, email_send=True)
@@ -49,4 +50,3 @@ def login():
             'realName': realName,
         }
     return jsonify(js), 200
-

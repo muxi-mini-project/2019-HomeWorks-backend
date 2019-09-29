@@ -12,16 +12,16 @@ def search():
     keyword = request.args.get('keyword')
     if not cookie:
         return jsonify({
-                'msg': 'No cookie'}), 400 
+                'msg': 'No cookie'}), 400
 
     if not keyword:
         return jsonify({
-                'msg': 'No keyword'}), 400 
+                'msg': 'No keyword'}), 400
     userId = User.get_userId_token(token)
 
     session = requests.session()
     session.cookies.set('cookies', cookie)
-    
+
     total = 0
     course_data = []
     assign_data = []
@@ -30,7 +30,7 @@ def search():
     header = {'cookie': cookie}
     payload = {
             'userId': userId,
-            'termCode': '201901',
+            'termCode': '201902',
             'pageNum': 1,
             'pageSize': 30,
             }
@@ -46,14 +46,14 @@ def search():
             c['siteId'] = siteId
             course_data.append(c)
             total += 1
-        
+
         cookie = session.cookies.get_dict().get('cookies')
         url = 'http://spoc.ccnu.edu.cn/assignment/getStudentAssignmentList'
-        payload = { 
+        payload = {
                 'siteId': siteId,
                 'userId': userId,
                 'pageNum': 1,
-                'pageSize': 50, 
+                'pageSize': 50,
                 }
         rp = session.post(url, json=payload, headers=header)
         assign_get_list = rp.json().get('data').get('list')
@@ -79,7 +79,7 @@ def search():
                 content_data.append(js)
 
     return_data = {
-                'msg': 'success', 
+                'msg': 'success',
                 'cookie': session.cookies.get_dict().get('cookies'),
                 'total': total,
                 'courseData': course_data,

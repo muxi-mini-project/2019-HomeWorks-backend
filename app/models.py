@@ -3,6 +3,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from random import randint
 import time
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     userName = db.Column(db.String(15), unique=True, index=True)
@@ -17,9 +18,9 @@ class User(db.Model):
     def generate_token(self, userId):
         s = Serializer(app.config['SECRET_KEY'], expires_in=99999999)
         return s.dumps({
-                    'id': self.id,
-                    'userId': userId
-                    }).decode('utf-8')
+            'id': self.id,
+            'userId': userId
+        }).decode('utf-8')
 
     @staticmethod
     def get_userId_token(token):
@@ -35,13 +36,13 @@ class User(db.Model):
         return userId
 
     def generate_email_token(self, email):
-        code = randint(1000, 9999)  #生成(1000,9999]的四位验证码
-        s = Serializer(app.config['SECRET_KEY'], expires_in=600)    #有效时间：10分钟
+        code = randint(1000, 9999)  # 生成(1000,9999]的四位验证码
+        s = Serializer(app.config['SECRET_KEY'], expires_in=600)  # 有效时间：10分钟
         token = s.dumps({
-                    'id': self.id,
-                    'email': email,
-                    'code': code
-                }).decode('utf-8')
+            'id': self.id,
+            'email': email,
+            'code': code
+        }).decode('utf-8')
         return {'token': token, 'code': code}
 
     @staticmethod
@@ -58,6 +59,7 @@ class User(db.Model):
             return False
         return True
 
+
 class NoticeTimeForm(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     userId = db.Column(db.String(50), unique=False, index=True)
@@ -68,9 +70,9 @@ class NoticeTimeForm(db.Model):
     def __repr__(self):
         return '<NoticeTime {} {}>'.format(self.notice_time, self.userId)
 
+
 # 用当前时间戳和用户名生成notice_time_id
 def generate_notice_time_id(userName):
     now = int(time.time())
     notice_time_id = str(now) + userName
     return notice_time_id
-
