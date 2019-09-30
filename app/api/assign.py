@@ -77,7 +77,6 @@ def get_assign_information(siteId, assignId):
         personalPoint = data.get('personalPoint')
         groupPoint = data.get('groupPoint')
         studentNum = data.get('studentNum')
-        groupNum = data.get('groupNum')
         pointNum = data.get('pointNum')
         commitNum = data.get('commitNum')
         status = data.get("status")
@@ -142,4 +141,3 @@ def get_assign_information(siteId, assignId):
         }
 
     return jsonify(return_data), 200
-

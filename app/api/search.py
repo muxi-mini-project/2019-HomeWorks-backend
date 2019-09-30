@@ -1,6 +1,7 @@
 import requests
 from flask import jsonify, request
 from . import app
+from .. import Config
 from ..models import User
 from ..verify import token_required
 
@@ -30,7 +31,7 @@ def search():
     header = {'cookie': cookie}
     payload = {
             'userId': userId,
-            'termCode': '201902',
+            'termCode': Config.TERM,
             'pageNum': 1,
             'pageSize': 30,
             }
@@ -87,4 +88,3 @@ def search():
                 'contentData': content_data,
             }
     return jsonify(return_data), 200
-

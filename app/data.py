@@ -1,7 +1,7 @@
 import requests
 from flask import request
 
-from . import app
+from . import app, Config
 from .models import User
 
 
@@ -13,7 +13,7 @@ def assign_list(cookie, userId):
     header = {'cookie': cookie}
     payload = {
             'userId': userId,
-            'termCode': '201902',
+            'termCode': Config.TERM,
             'pageNum': 1,
             'pageSize': 30,
             }

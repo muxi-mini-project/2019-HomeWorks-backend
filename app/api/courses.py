@@ -3,6 +3,7 @@ from flask import jsonify, request
 
 from ..models import User
 from ..verify import token_required, verify_siteId
+from .. import Config
 from . import app
 
 
@@ -22,7 +23,7 @@ def courseList():
     header = {'cookie': cookie}
     payload = {
             'userId': userId,
-            'termCode': '201902',
+            'termCode': Config.TERM,
             'pageNum': 1,
             'pageSize': 30,
             }

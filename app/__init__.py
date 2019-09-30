@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
-
 from config import Config
 
 app = Flask(__name__)

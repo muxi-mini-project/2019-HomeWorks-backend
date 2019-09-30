@@ -5,6 +5,18 @@ from celery.schedules import crontab
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+def get_term():
+    now = datetime.now()
+    year = now.year
+    month = now.month
+    if month <= 1:
+        TERM = str(year - 1) + '02'
+    elif month <= 7:
+        TERM = str(year) + '01'
+    else:
+        TERM = str(year) + '02'
+    return TERM
+
 
 class Config(object):
     SECRET_KEY = os.getenv("SECRET_KEY") or "Homeworks_key"
@@ -22,18 +34,7 @@ class Config(object):
     MAIL_DEFAULT_SENDER = 'Homeworks <654957943@qq.com>'
 
     # 学期
-    TERM = '201901'
-
-    def __init__(self):
-        now = datetime.now()
-        year = now.year
-        month = now.month
-        if month <= 1:
-            self.TERM = str(year - 1) + '02'
-        elif month <= 7:
-            self.TERM = str(year) + '01'
-        else:
-            self.TERM = str(year) + '02'
+    TERM = get_term() or '201901'
 
 
 class Celery_config(object):

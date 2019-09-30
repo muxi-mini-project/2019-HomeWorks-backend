@@ -3,7 +3,8 @@
 from flask import jsonify, request
 from . import app
 from ..models import User
-from ..data import assign_list, course_list, assign_info
+from ..data import assign_list
+
 
 @app.route('/search/', methods=['GET'])
 def search():
@@ -63,4 +64,3 @@ def search():
                 'content_data': content_data,
             }
     return jsonify(return_data), 200
-    
