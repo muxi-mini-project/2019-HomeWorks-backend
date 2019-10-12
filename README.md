@@ -13,8 +13,6 @@ HomeWorks：
 
 ## 创建数据库
 
-因为是使用SQLite
-
 ```python
 >> from app import db
 >> db.create_all()
